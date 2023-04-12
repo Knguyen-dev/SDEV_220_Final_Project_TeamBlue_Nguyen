@@ -1,8 +1,6 @@
-# Here is where we create the classes for the system, and then we will be able to import these classes to other files
-# Or maybe along the way we decide on a different organizational style when making the code
+# Class representing what individual users or consumer accounts may look like 
 
-
-# Create class representing individual users or consumer accounts
+# NOTE: Just a draft, not set in stone; since we're using tkinter and databases our code is likely to change a lot if we tihnk about how things will work more
 class User:
 		def __init__(self, username, firstName, lastName, shippingAddress, emailAddress):
 				
@@ -17,17 +15,14 @@ class User:
 				self._emailAddress = emailAddress 
 				
 				# When we create accounts, the points and amount of money is going to be 0, accounts don't start off with money
-				# As well as this recentPUrchases is empty 
+				# As well as this recentPUrchases is empty
 				self._userPoints = 0 
 				self._userBalance = 0 
-				self._recentPurchases = [] 
+				self._recentPurchases = [] # list of integers that represent id for purchase table
 
-				# A good alternative to self.lastPurchase would be having an id of the last receipt or purchase that they checked out
-				# self.lastPurchase = ""
-
-				# Represents shopping cart class instance that they 
+				# Represents the one shopping cart instance instance that they each User is linked to 
 		
-		# Setter functiosn to change attributes of User instance; obviously include functionality to save the new information to a database when finished.
+		# Setter functions to change attributes of User instances; obviously include functionality to save the new information to a database when finished.
 		def setUsername(self, newUsername):
 			self._username = newUsername
 		def setFirstName(self, newFirstName): # later have functionality that only accepts alphabetic characters
@@ -51,9 +46,15 @@ class User:
 		def subtractUserBalance(self, amount):
 			self._userBalance -= amount
 		
-		# I'm probably going to move forward, with it acting as receipts and purchase receipt id for purchase history
-		# def setPurchaseHistory()
-		# getPurchaseHistory()
+		# Adds a purchase id to the front of the recentPurchases array 
+		def addRecentPurchases(self, newPurchase):
+			self._recentPurchases.insert(0, newPurchase) 
+		# Here we simulate removing a purchase from the back of the array, maybe when there's more than a certain amount it removes the oldest one
+		def removeRecentPurchase(self):
+			self.recentPurchases.pop()
+
+
+		
 		# Getter functions to get user instance attributes
 		def getUsername(self):
 			return self._username
@@ -67,6 +68,9 @@ class User:
 			return self._emailAddress
 		def getPoints(self):
 			return self._userPoints
+		def getBalance(self):
+			return self._userBalance
+		
 		
 def main():
 	stuff = "Just the starting message in main"
