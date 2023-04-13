@@ -17,9 +17,6 @@ class User:
 		self._userBalance = 0 
 		self._recentPurchases = [] # list of integers that represent id for purchase table
 
-		# NOTE: Add shopping cart attribute which is another class for one to one relationship
-		# Represents the one shopping cart instance instance that they each User is linked to 
-
 	# Setter functions to change attributes of User instances; obviously include functionality to save the new information to a database when finished.
 	def setUsername(self, newUsername):
 		self._username = newUsername
@@ -67,9 +64,3 @@ class User:
 	# Function prints "User" instances by showing this string 
 	def __repr__(self):
 		return f"Username: {self._username}\nFirst name: {self._firstName}\nLast name: {self._lastName}\nShipping Address: {self._shippingAddress}\nEmail Address: {self._emailAddress}\nBalance: {self._userBalance}\nPoints: {self._userPoints}"
-		
-		
-def main():
-	user1 = User("David42", "David", "Bills", "123 English CT", "DB82@gmail.com")
-	
-main()

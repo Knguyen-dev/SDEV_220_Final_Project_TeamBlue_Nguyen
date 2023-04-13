@@ -1,18 +1,13 @@
 # Class that represents the shopping cart that each should just have one shopping cart
 
 class ShoppingCart:
-	def __init__(self, userID):
+	def __init__(self, USER_ID):
 		# Represents the user ID (ID in User table) that the shopping cart is associated with.
 		# Simple Implementation: userID acts as an identifier to remind us who's linked to the cart; in this way the cart's contents aren't saved between sessions since we aren't storing them, but it's a lot more simple which is good enough.
 		# In this case, we likely just need a "User" database table, and we just need a user to be added to the database so that we can use its database ID to pass to ShoppingCart. 
-		
-		# Complex Implementation: We could try to make it so there's a "ShoppingCart" database, and if we query it we get the shopping cart. But that would also mean having a database like  "ShoppingCart Items", which tracks items in all shopping carts.
-		# It'd have "ID", "Shopping Cart ID" probably, and then "Item id", and then "quantity of item".
-	
-		# Since the later is really complicated, let's keep it simple 
 
-		self._userID = userID
 
+		self._USER_ID =  USER_ID
 		# Will be a dictionary, with keys being the database ID values of the items in the cart, and values being the quantity of those items. 
 		self._cartItems = dict()
 		self._totalCost = 0
@@ -49,9 +44,9 @@ class ShoppingCart:
 	
 	# Returns the userID of the "User" associated with the shopping cart
 	def getUserID(self):
-		return self._userID
+		return self._USER_ID
 
 	# Returns the below string when trying to print the function
 	def __repr__(self):
 		self.getTotalCost() # update the total cost of the shopping cart 
-		return f"Cart UserID: {self._userID}\nItems in Cart: {self.getCartItems()}\nTotal Cart Cost: {self._totalCost}"
+		return f"Cart UserID: {self._USER_ID}\nItems in Cart: {self.getCartItems()}\nTotal Cart Cost: {self._totalCost}"
