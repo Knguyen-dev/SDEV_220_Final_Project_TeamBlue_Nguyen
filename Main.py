@@ -84,7 +84,7 @@ class App(tk.Tk):
         # user / cart button
         self.cartButton  = ttk.Button(master=self.userFrame, text='Cart', compound=RIGHT, command=lambda: self.openPage("cartPage"))
         self.cartButton.pack(side=LEFT, ipadx=10, fill=Y)
-
+        # user login button logic
         if self.loggedinUser is not None:
             self.userButton  = ttk.Button(master=self.userFrame, text='User', compound=RIGHT, command=lambda: self.openPage("userPage", self.loggedinUser))
             self.userButton.pack(side=LEFT, ipadx=10, fill=Y)

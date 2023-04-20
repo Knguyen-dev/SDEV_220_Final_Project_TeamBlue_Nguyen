@@ -45,7 +45,7 @@ class homePage(tk.Frame):
         # Image section
         imageFrame = tkb.Frame(product_card, height=120)
 
-        # Opens url, reads image data, create and resize our image; format it with tkinter and position on screen
+        # Opens url, reads image data, create and resize our image; format it with tkinter and position on screen 
         response = urlopen(product[4])
         data = response.read()
         image = Image.open(io.BytesIO(data))

@@ -16,7 +16,7 @@ class homePage(tk.Frame):
         self.app = app
         self.homePage = tkb.Frame(self.app)
         self.homePage.place(relx=.5, rely=0.55, anchor="c")
-
+        ## db
         self.conn = sqlite3.connect('assets/PyProject.db')
         self.cursor = self.conn.cursor()
 

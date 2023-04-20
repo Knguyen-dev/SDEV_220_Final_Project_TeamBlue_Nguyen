@@ -22,7 +22,7 @@ class productPage(tk.Frame):
         self.cartLabel = tkb.Label(self.content, text=f"{self.productInfo[1]}: {self.productInfo[2]}")
         self.cartLabel.pack()
 
-
+    ## get product
     def getProduct(self, id):
        self.cursor.execute(f"SELECT * FROM items WHERE id={id}")
        product = self.cursor.fetchall()

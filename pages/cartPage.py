@@ -14,7 +14,7 @@ class cartPage(tk.Frame):
         self.app = app
         self.content = tkb.Frame(self)
         self.content.pack(fill=BOTH, expand=True)
-        self.content.rowconfigure(0, weight=1) # set row 0 to expand vertically
+        self.content.rowconfigure(0, weight=1) # set row 0 to expand vertically 
 
         self.priceFrame = tkb.Frame(self.content, bootstyle=PRIMARY)
         self.priceFrame.pack(fill="y", ipadx=100, side=LEFT)

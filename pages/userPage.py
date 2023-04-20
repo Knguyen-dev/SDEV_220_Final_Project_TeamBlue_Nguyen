@@ -19,7 +19,7 @@ class userPage(tk.Frame):
         
         self.userPage.grid_columnconfigure(0, weight=1)
 
-        ## Check if user was passed through
+        ## Check if user was passed through function
         if user is not None:
             if self.getUser(user) != "error":
                self.user = self.getUser(user)
