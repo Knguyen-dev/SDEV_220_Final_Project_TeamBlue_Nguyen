@@ -18,6 +18,7 @@ class userLogin(tk.Frame):
 		self.app = app
 		self.loginPage = tkb.Frame(self)
 
+		self.exampleLabel = tkb.Label(self.loginPage, text="This is some sample text")
 		self.exampleLabel.pack() 
 
 
