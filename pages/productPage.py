@@ -12,8 +12,8 @@ class productPage(tk.Frame):
     def __init__(self, master, app, productID):
         super().__init__(master)
         self.app = app
-        self.content = tkb.Frame(self.app)
-        self.content.place(relx=.5, rely=0.55, anchor="c")
+        self.content = tkb.Frame(self)
+        self.content.pack()
         
         self.conn = sqlite3.connect('assets/PyProject.db')
         self.cursor = self.conn.cursor()
