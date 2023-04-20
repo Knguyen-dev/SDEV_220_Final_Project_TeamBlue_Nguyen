@@ -20,7 +20,7 @@ class homePage(tk.Frame):
         self.app = app
         ## homePage Frame to make page responsive
         # Actually a giant text box with a lot of whitespace so that our product cards can go on there. We put it in a state of disabled so that
-        # The user doesn't accidentally type on it
+        # The user doesn't accidentally type on it, with it being a text box
         self.homePage = tkb.Text(self, bd = 10, wrap="char", borderwidth=1, highlightthickness=0, state="disabled", spacing1 = 50, spacing2 = 20, insertofftime=0)
         self.homePage.pack(fill=BOTH, expand=True)
 
