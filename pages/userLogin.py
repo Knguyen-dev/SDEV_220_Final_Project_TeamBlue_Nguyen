@@ -11,7 +11,7 @@ class userLogin(tk.Frame):
 
         self.loginPage = tkb.Frame(self)
 
-        self.exampleLabel = tkb.Label(self.loginPage, text="Welcome to login")
+        self.exampleLabel = tkb.Label(self.loginPage, text="Welcome to your login page")
         self.exampleLabel.pack()
 
         self.loginPage.pack()
