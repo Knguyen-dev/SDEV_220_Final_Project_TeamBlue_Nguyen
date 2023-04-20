@@ -12,7 +12,7 @@ class userPage(tk.Frame):
     def __init__(self, master, app):
         super().__init__(master)
         self.app = app
-        self.content = tkb.Frame(self.app)
+        self.content = tkb.Frame(self)
         self.content.place(relx=.5, rely=0.55, anchor="c")
 
         self.cartLabel = tkb.Label(self.content, text="Welcome to your User Profile")

@@ -13,26 +13,28 @@ class homePage(tk.Frame):
     def __init__(self, master, app, *args):
         super().__init__(master)
         self.master = master
-        self.app = app#
-        self.homePage = tkb.Text(self, bd = 10, wrap="char", borderwidth=1, highlightthickness=0,
-                            state="disabled", spacing1 = 50, spacing2 = 20, insertofftime=0)
-        self.homePage.pack(fill=BOTH, expand=True)
-
-        self.products = []
+        self.app = app
+        self.homePage = tkb.Frame(self.app)
+        self.homePage.place(relx=.5, rely=0.55, anchor="c")
 
         self.conn = sqlite3.connect('assets/PyProject.db')
         self.cursor = self.conn.cursor()
 
+        Scrollbar(self, orient='vertical')
+
         if args:
-            if args[0] is not None:
-                self.searchProducts(args[0])
+            self.searchProducts(args[0])
         else:
             self.getProducts()
 
+        for i in range(3):
+            self.homePage.grid_rowconfigure(i,  weight =1)
+        for i in range(4):
+            self.homePage.grid_columnconfigure(i,  weight =1)
 
     def createProductDisplay(self, product):
-        product_card = tk.Frame(self.homePage, width=200, height=200,  highlightbackground="#eee", highlightthickness=1, padx=3, pady=2)
-        imageFrame = tkb.Frame(product_card, height=120)
+        product_card = tkb.Frame(self.homePage, width=200, height=200,  bootstyle=PRIMARY)
+        imageFrame = tkb.Frame(product_card, height=120, bootstyle=PRIMARY)
 
         response = urlopen(product[4])
         data = response.read()
@@ -41,7 +43,7 @@ class homePage(tk.Frame):
         image = ImageTk.PhotoImage(image=image)
         image_label = tkb.Label(imageFrame, image=image)
         image_label.image = image
-        image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
+        image_label.grid(row=0, column=0, sticky=tk.EW, padx=10, pady=10)
         imageFrame.pack(fill=X)
 
         detailFrame = tkb.Frame(product_card, height=80)
@@ -57,27 +59,23 @@ class homePage(tk.Frame):
 
         name_label.bind("<Button-1>", lambda e:self.master.openPage("productPage", product[0]))
 
-        detailFrame.pack(fill=X, expand=True)
-        
+        detailFrame.pack(fill=X)
 
-        self.homePage.configure(state="normal")
-        self.homePage.window_create("end", window=product_card)
-        
-        self.homePage.configure(state="disabled")
+        row = (len(self.homePage.winfo_children())-1) // 4
+        col = (len(self.homePage.winfo_children())-1) % 4
+        product_card.grid(row=row, column=col, padx=10, pady=10)
+        product_card.grid_rowconfigure(0, weight=1)
 
     def thread(self, row):
             t1=Thread(target=self.createProductDisplay(row))
             t1.start()
 
     def searchProducts(self, searchedProduct):
-        self.cursor.execute("SELECT * FROM items WHERE name LIKE ? LIMIT 12", ('%' + searchedProduct + '%',))
+        self.clear_all()
+        self.cursor.execute("SELECT * FROM items WHERE name LIKE ? LIMIT 6", ('%' + searchedProduct + '%',))
         rows = self.cursor.fetchall()
-        if len(rows) > 0:
-            for row in rows:
-                self.thread(row)
-        else:
-            self.emptyLabel = tkb.Label(self.homePage, text="Nothing was found.")
-            self.emptyLabel.pack()
+        for row in rows:
+            self.thread(row)
 
     def getProducts(self):
        self.cursor.execute("SELECT * FROM items LIMIT 12")
