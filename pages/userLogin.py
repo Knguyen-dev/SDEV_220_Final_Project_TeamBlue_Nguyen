@@ -3,15 +3,21 @@ from tkinter import Scrollbar, ttk
 import ttkbootstrap as tkb
 from ttkbootstrap.constants import *
 from ttkbootstrap.style import Bootstyle
+from PIL import Image, ImageTk
+from urllib.request import urlopen
+import io
+import sqlite3
+ 
 
 class userLogin(tk.Frame):
-    def __init__(self, master, app):
-        super().__init__(master)
-        self.app = app
+	# self is own frame, master main file, app is the window
+	def __init__(self, master, app):
+		super().__init__(master)
 
-        self.loginPage = tkb.Frame(self)
 
-        self.exampleLabel = tkb.Label(self.loginPage, text="Welcome to your login page")
-        self.exampleLabel.pack()
+		self.app = app
+		self.loginPage = tkb.Frame(self)
 
-        self.loginPage.pack()
+		self.exampleLabel.pack() 
+
+
