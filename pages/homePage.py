@@ -73,6 +73,7 @@ class homePage(tk.Frame):
         name_label.bind("<Button-1>", lambda e:self.master.openPage("productPage", product[0]))
         detailFrame.pack(fill=X, expand=True)
         
+
         ## Changes state of homePage to Normal to allow the insertation of product card, then changes back to disabled
         self.homePage.configure(state="normal")
 
