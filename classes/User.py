@@ -60,6 +60,19 @@ class User:
 		return self._userBalance
 	def getRecentPurchases(self):
 		return self._recentPurchases
+	
+	## Gets the name of the user instance attributes using set names the attributes are associated with
+	def getAttributeByName(self, attributeName):
+		attributeMapper = {
+			"username": self.getUsername(),
+			"firstname": self.getFirstName(),
+			"lastname": self.getLastName(),
+			"email": self.getEmailAddress(),
+			"shippingaddress": self.getShippingAddress(),
+			"balance": self.getBalance(),
+			"points": self.getPoints(),
+		}
+		return attributeMapper[(attributeName.lower()).replace(" ", "")]
 
 	# Function prints "User" instances by showing this string 
 	def __repr__(self):
