@@ -31,7 +31,7 @@ class userPage(tk.Frame):
 		
 		# Create instance of "User" class with that userData, this represents the class instance of the current logged in user
 		# Also update the balance and points attributes since their attributes are defaulted to zero when creating a User instanec
-		self.currentUser = User(self.userData[1], self.userData[2], self.userData[2], self.userData[6], self.userData[4])
+		self.currentUser = User(self.userData[1], self.userData[2], self.userData[3], self.userData[6], self.userData[4])
 		self.currentUser.setUserBalance(self.userData[5])
 		self.currentUser.setUserPoints(self.userData[7])
 		# should also update the points and balance
@@ -39,14 +39,7 @@ class userPage(tk.Frame):
 		# Represents the http URL for the image
 		self.userAvatarSource = self.userData[9] 
 
-
-		# BOOK MARK: Create current user class instance, maybe try hand at some styling, but 
-		# getting the class instance and being able to have all of the class information is key 
-		# Should commit when login and registration is done and userPage has been linked
-
-		# attribute names for the user class instance  
-
-		# BOOK MARK: Something wrong with attribute mapper
+		# Represents names of user attribute from the User class
 		self.userAttributeNames = ["Username", "First Name", "Last Name", "Email", "Shipping Address", "Balance", "Points"]
 
 		self.createImageFrame()
@@ -71,32 +64,22 @@ class userPage(tk.Frame):
 		self.accountSettingsSection.grid(row=2, column=0)
 
 		# create buttons for logging out user, and opening the pages where you edit or delete your account 
-		self.openEditAccountBtn = tkb.Button(self.accountSettingsSection, text="Edit Account")
+		self.openEditAccountBtn = tkb.Button(self.accountSettingsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
 		self.openManageBalanceBtn = tkb.Button(self.accountSettingsSection, text="Manage Wallet Balance")
-		self.logOutBtn = tkb.Button(self.accountSettingsSection, text="Log Out")
+		self.logOutBtn = tkb.Button(self.accountSettingsSection, text="Log Out", command=self.logOutUser)
 		self.openDeleteAccountBtn = tkb.Button(self.accountSettingsSection, text="Delete Account")
-
 		# Position those buttons
 		self.openEditAccountBtn.grid(row=0, column=0, padx=5, pady=5)
 		self.openManageBalanceBtn.grid(row=1, column=0, padx=5, pady=5)
 		self.logOutBtn.grid(row=2, column=0, padx=5, pady=5)
 		self.openDeleteAccountBtn.grid(row=3, column=0, padx=5, pady=5)
 
-
-
-
-		# BOOK MARK: AT LEAST FINISH TRYING TO CREATE SECTIONS FOR THE FUTURE BUTTONS. THEN COMMIT AND DO ACCOUNT EDITING PAGE, LOGOUT FEATURE,
-		# AND DELETE ACCOUNT PAGE
-
 		# Create labels for all of the user's attributes using the names of those attributes
 		for x in range(len(self.userAttributeNames)):
 			userAttributeLabel = tkb.Label(self.userInfoSection, text=f"{self.userAttributeNames[x]}: {self.currentUser.getAttributeByName(self.userAttributeNames[x])}")
 			userAttributeLabel.grid(row=x, column=0)
 
-
-		# self.userName = tkb.Label(self.userInfoSection, text="USERNAME", font=('Helvetica', 18, 'bold'))
-		# self.userName.grid(row=0, column=0)
-
+	# Create image section
 	def createImageFrame(self):
 		self.imageFrame = tk.Frame(self.userPage,   highlightbackground="#eee", highlightthickness=1)
 		response = urlopen(self.userAvatarSource)
@@ -109,18 +92,16 @@ class userPage(tk.Frame):
 		image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
 		self.imageFrame.grid(row=0, column=0, sticky="NS", ipadx=20)
 
+	# Get the user information; login process guarantees that an existing and valid userID exists, so we can be sure that this query always brings the right user data
 	def getUser(self, id):
 		self.master.cursor.execute(f"SELECT * FROM Users WHERE id={id}")
 		user = self.master.cursor.fetchone()
-		if user is not None:
-			return user
-		else:
-			return "error"
+		return user
 	
 	## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
 	def logOutUser(self):
-		# it's going to take the user to the login page
-		# it's going to make the loggedinUser value None
-
 		self.master.loggedinUser = None
+		# Change userButton so that it redirects to the login page 
+		self.master.userButton.configure(text="Login", command=lambda: self.master.openPage("userLogin"))
 		self.master.openPage("userLogin")
+		return

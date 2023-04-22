@@ -10,19 +10,19 @@ import io
 import sqlite3
 import hashlib
 
-
+# For making importing easier; essentially think of it as we are in the base project directory now; then we go into the "classes" folder and get our module/python file, then import our class
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes.User import User
+import classes.utilities as Utilities
+
 
 class userRegister(tk.Frame):
 	# self is own frame, master main file, app is the window
 	def __init__(self, master, app):
 		super().__init__(master)
 		self.app = app
-
-		print(self.app)
 
 		# Create the frame that will contain all of the widgets and things on the page
 		self.registrationPage = tkb.Frame(self)
@@ -64,10 +64,10 @@ class userRegister(tk.Frame):
 	## Function for creating a user account and adding it to the database
 	def createUserAccount(self):
 		# input validation to make sure they aren't entering blank or whitespace only
-		for entry in self.entryCreateList:
-			if entry.get().strip() == "":
-				self.creationMessageLabel.config(text="Account Creation Error: Some fields were left blank")
-				return
+		self.entryCreateList = Utilities.stripEntryWidgets(self.entryCreateList)
+		if Utilities.isEmptyEntryWidgets(self.entryCreateList):
+			self.creationMessageLabel.config(text="Account Creation Error: Some fields were left blank")
+			return
 			
 		# Get password from the corresponding entry widget
 		inputPassword = self.entryCreateList[5].get()
@@ -77,13 +77,11 @@ class userRegister(tk.Frame):
 			return
 
 		# Create user instance with the input from the input entries
-
 		inputUser = User(username=self.entryCreateList[0].get(), firstName=self.entryCreateList[1].get(), lastName=self.entryCreateList[2].get(), shippingAddress=self.entryCreateList[3].get(), emailAddress=self.entryCreateList[4].get())
-
-		engine = sa.create_engine("sqlite:///assets/PyProject.db")
-		with engine.connect() as conn:
-			result = conn.execute(sa.text("SELECT username FROM Users WHERE username=:username"), {"username": inputUser.getUsername()})
-			data = result.fetchone()
+		
+		with self.master.conn:
+			self.master.cursor.execute("SELECT username FROM Users WHERE username=:username", {"username": inputUser.getUsername()})
+			data = self.master.cursor.fetchone()
 
 			# If there's an username entry in the database with the same username as the one that was inputted, then we get an error when creating the account since usernames are supposed to be unique
 			if data is not None:
@@ -91,8 +89,8 @@ class userRegister(tk.Frame):
 				return
 			
 			# Account creation is successful, add it to the database and save database
-			conn.execute(sa.text("INSERT INTO Users (username, fname, lname, email, balance, address, points, password_hash, avatar) VALUES (:username, :fname, :lname, :email, :balance, :address, :points, :password_hash, :avatar)"),
-	       {
+			self.master.cursor.execute("INSERT INTO Users (username, fname, lname, email, balance, address, points, password_hash, avatar) VALUES (:username, :fname, :lname, :email, :balance, :address, :points, :password_hash, :avatar)",
+			{
 			"username": inputUser.getUsername(),
 			"fname": inputUser.getFirstName(),
 			"lname": inputUser.getLastName(),
@@ -104,8 +102,7 @@ class userRegister(tk.Frame):
 			"password_hash": hashlib.md5(inputPassword.encode("utf-8")).hexdigest(),
 			# Set their avatar or profile picture to a default image in the database; so all accounts start off with default image
 			"avatar": "https://st3.depositphotos.com/1767687/16607/v/600/depositphotos_166074422-stock-illustration-default-avatar-profile-icon-grey.jpg"
-		   })
-			conn.commit()
+			})
 
 		# Now that they've successfully created the account we take them to the login page so that they can login with their new information
 		self.master.openPage("userLogin")

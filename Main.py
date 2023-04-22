@@ -1,7 +1,6 @@
 import importlib
 import sys
 import sqlite3
-
 ## Tkinter and Tkinter Framework
 import tkinter as tk
 from tkinter import Scrollbar, ttk
@@ -82,15 +81,14 @@ class App(tk.Tk):
 		self.userFrame = tkb.Frame(self.navbar, bootstyle="primary")
 		self.userFrame.pack(fill=Y, side=RIGHT)
 		# user / cart button
-		self.cartButton  = ttk.Button(master=self.userFrame, text='Cart', compound=RIGHT, command=lambda: self.openPage("cartPage"))
+		self.cartButton = ttk.Button(master=self.userFrame, text='Cart', compound=RIGHT, command=lambda: self.openPage("cartPage"))
 		self.cartButton.pack(side=LEFT, ipadx=10, fill=Y)
-		# user login button logic
-		if self.loggedinUser is not None:
-			self.userButton  = ttk.Button(master=self.userFrame, text='User', compound=RIGHT, command=lambda: self.openPage("userPage", self.loggedinUser))
-			self.userButton.pack(side=LEFT, ipadx=10, fill=Y)
-		else:
-			self.userButton  = ttk.Button(master=self.userFrame, text='Login', compound=RIGHT, command=lambda: self.openPage("userLogin"))
-			self.userButton.pack(side=LEFT, ipadx=10, fill=Y)
+
+		# create the userButton; by default it's set to "Login" and takes you to the login page, but once you log in, it changes to show your account
+		# NOTE: Logic for changing the button is in the userLogin page 
+		self.userButton = ttk.Button(master=self.userFrame, text='Login', compound=RIGHT, command=lambda: self.openPage("userLogin"))
+		self.userButton.pack(side=LEFT, ipadx=10, fill=Y)
+	
 			
 
 
