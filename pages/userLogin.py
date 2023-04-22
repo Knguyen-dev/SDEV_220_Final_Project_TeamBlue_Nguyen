@@ -4,7 +4,6 @@ import ttkbootstrap as tkb
 from ttkbootstrap.constants import *
 from ttkbootstrap.style import Bootstyle
 from PIL import Image, ImageTk
-import sqlalchemy as sa
 from urllib.request import urlopen
 import io
 import sqlite3
@@ -45,7 +44,7 @@ class userLogin(tk.Frame):
 		openCreateAccountBtn = tkb.Button(self.loginBtnSection, text="Don't have an account?", command=lambda: self.master.openPage("userRegister")) 
 		confirmLoginBtn = tkb.Button(self.loginBtnSection, text="Confirm", command=self.loginUserAccount)
 		
-		self.fieldNamesLogin = ["Email", "Password"] # List of fields names needed for logging
+		self.fieldNamesLogin = ["Username", "Password"] # List of fields names needed for logging
 		self.entryLoginList = [] # List of entry widgets for getting login input, we will then access these widgets later in the loginUserAccount function
 
 		# Create label and entry widgets for each field, and position them; store the entry widgets for later use; then position the button section at the bottom of the grid
@@ -74,10 +73,11 @@ class userLogin(tk.Frame):
 		inputPassword = self.entryLoginList[1].get()
 
 		with self.master.conn:
-			# Get entries that match email and password hash
-			self.master.cursor.execute("SELECT * from Users WHERE email=:email AND password_hash=:password_hash", 
+			# Get entries that match username and password hash
+			# We are using username to log in because that's unique to every account
+			self.master.cursor.execute("SELECT * from Users WHERE username=:username AND password_hash=:password_hash", 
 			{
-				"email": self.entryLoginList[0].get(), "password_hash": hashlib.md5(inputPassword.encode("utf-8")).hexdigest()
+				"username": self.entryLoginList[0].get(), "password_hash": hashlib.md5(inputPassword.encode("utf-8")).hexdigest()
 			})
 			data = self.master.cursor.fetchone()
 

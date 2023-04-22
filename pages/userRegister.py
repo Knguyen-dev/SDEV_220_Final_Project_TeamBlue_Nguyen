@@ -4,7 +4,6 @@ import ttkbootstrap as tkb
 from ttkbootstrap.constants import *
 from ttkbootstrap.style import Bootstyle
 from PIL import Image, ImageTk
-import sqlalchemy as sa
 from urllib.request import urlopen
 import io
 import sqlite3

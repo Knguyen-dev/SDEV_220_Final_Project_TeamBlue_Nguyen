@@ -4,7 +4,6 @@ import ttkbootstrap as tkb
 from ttkbootstrap.constants import *
 from ttkbootstrap.style import Bootstyle
 from PIL import Image, ImageTk
-import sqlalchemy as sa
 from urllib.request import urlopen
 import io
 import sqlite3
@@ -42,7 +41,7 @@ class userEdit(tk.Frame):
 
 		# Create section for inputting information about editing accounts and create a section for buttons 
 		self.inputEditSection = tkb.LabelFrame(self.editPage, text="Edit Account Information")
-		self.inputEditSection.pack( ipadx=20, ipady=10)
+		self.inputEditSection.pack(ipadx=20, ipady=10)
 		
 		# Create button section for edit page
 		self.editBtnSection = tkb.Frame(self.inputEditSection)
@@ -78,7 +77,6 @@ class userEdit(tk.Frame):
 		self.openManageBalanceBtn.grid(row=0, column=1)
 		self.openChangePasswordBtn.grid(row=0, column=2)
 
-
 	## Function checks user accounts and then goes to make edits in the database if successful
 	def editUserAccount(self):
 		# Input validation to check if entry widgets are empty; if user only entered spaces, then an empty string woudl be the result
@@ -88,38 +86,15 @@ class userEdit(tk.Frame):
 		if Utilities.isEmptyEntryWidgets(self.entryEditList):
 			self.editMessageLabel.config(text="Account Edit Error: Some fields were left blank")
 			return
-
-		'''
-		1. FOR TOMORROW: MAKE SURE THE UTILITIES MODULE THAT WE IMPORTED IS WORKING, CHECK IT'S REPLACING THE 
-		WIDGETS AND CHECK IF IT'S DETECTING BLANKS
-
-		2. THEN CHECK FOR THE DATABASE IF IT'S CHECKING DUPLICATE USERNAMES CORRECTLY
-
-		3. THEN FINALLY CHECK IF ITS SAVING THEM INTO THE DATABASE CORRECTLY
-		
-		4. AFTER THIS, MAKE SURE TO UNIFORMALIZE THE SELF.MASTER.CONN WITH YOUR OTHER DATABASE CODE SECTIONS
-		AND THEN ADD THESE ERROR HANDLINGS TO THEM AS WELL, OBVIOUSLY MAKE SURE THEY WORK AGAIN AS WELL
-
-		
-
-		5. IF YOU'RE DONE WITH THAT THEN START ON THE OTHER PAGES AS WELL FOR USER
-
-
-		6. AFTER I THINK A PULL REQUEST IS IN ORDER
-
-		NOTE: userEdit and userRegister seem done for this task, so do the same for userLogin
-		'''
 		
 		with self.master.conn:
 			self.master.cursor.execute(f"SELECT id FROM Users WHERE username=:username", {"username": self.entryEditList[0].get().strip()})
 			data = self.master.cursor.fetchone()
-			
 			# If a usernames from the database is found, then it could be a duplicate or it could be the user's own username we are matching
 			# If it's another account that has the username, then it's a duplicate username and we throw an error
 			if data is not None and data[0] != self.master.loggedinUser:
 				self.editMessageLabel.config(text= "Username is already taken")
 				return
-
 			# If these tests are passed then we should save the stuff in the database
 			# .strip() to remove any leading or trailing whitespace in the user's input
 			self.master.cursor.execute(f'''UPDATE Users SET username=:username, fname=:fname, lname=:lname, email=:email, address=:address WHERE id=:id''', 

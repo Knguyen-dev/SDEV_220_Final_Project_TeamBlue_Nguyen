@@ -51,7 +51,7 @@ class App(tk.Tk):
 		if self.current_page:
 			self.current_page.destroy()
 
-		self.current_page = page_class(self, self, *args)
+		self.current_page = page_class(self, self, *args) 
 		self.current_page.pack(fill='both', expand=True)
 
 	## function createNavbar()
@@ -88,10 +88,9 @@ class App(tk.Tk):
 		# NOTE: Logic for changing the button is in the userLogin page 
 		self.userButton = ttk.Button(master=self.userFrame, text='Login', compound=RIGHT, command=lambda: self.openPage("userLogin"))
 		self.userButton.pack(side=LEFT, ipadx=10, fill=Y)
+		
+		
 	
-			
-
-
 	## function searchFunction()
 	## Grabs text from inside of searchBar Entry and sends data to homePage
 	def searchFunction(self):

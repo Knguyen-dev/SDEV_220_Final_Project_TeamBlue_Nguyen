@@ -59,6 +59,13 @@ class userPage(tk.Frame):
 		# Here's an example purchase to see where the purchase section is
 		self.samplePurchase = tkb.Label(self.recentPurchasesSection, text="1. Example Purchase")
 
+		'''
+		Here would be a for loop to loop through all of those purchases and grid them on the recent purchase section
+		
+		'''
+		self.samplePurchase.grid(row=0, column=0)
+
+
 		# Create section that contains buttons relating to manipulating the user's account (account settings), such as logging out, editing account info, etc.
 		self.accountSettingsSection = tkb.LabelFrame(self.userDetailsSection, text="Account Settings", borderwidth=2, relief="groove")
 		self.accountSettingsSection.grid(row=2, column=0)
@@ -67,7 +74,7 @@ class userPage(tk.Frame):
 		self.openEditAccountBtn = tkb.Button(self.accountSettingsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
 		self.openManageBalanceBtn = tkb.Button(self.accountSettingsSection, text="Manage Wallet Balance")
 		self.logOutBtn = tkb.Button(self.accountSettingsSection, text="Log Out", command=self.logOutUser)
-		self.openDeleteAccountBtn = tkb.Button(self.accountSettingsSection, text="Delete Account")
+		self.openDeleteAccountBtn = tkb.Button(self.accountSettingsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
 		# Position those buttons
 		self.openEditAccountBtn.grid(row=0, column=0, padx=5, pady=5)
 		self.openManageBalanceBtn.grid(row=1, column=0, padx=5, pady=5)
@@ -81,7 +88,7 @@ class userPage(tk.Frame):
 
 	# Create image section
 	def createImageFrame(self):
-		self.imageFrame = tk.Frame(self.userPage,   highlightbackground="#eee", highlightthickness=1)
+		self.imageFrame = tkb.Frame(self.userPage)
 		response = urlopen(self.userAvatarSource)
 		data = response.read()
 		image = Image.open(io.BytesIO(data))
