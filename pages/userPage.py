@@ -72,7 +72,7 @@ class userPage(tk.Frame):
 
 		# create buttons for logging out user, and opening the pages where you edit or delete your account 
 		self.openEditAccountBtn = tkb.Button(self.accountSettingsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
-		self.openManageBalanceBtn = tkb.Button(self.accountSettingsSection, text="Manage Wallet Balance")
+		self.openManageBalanceBtn = tkb.Button(self.accountSettingsSection, text="Manage Wallet Balance", command=lambda: self.master.openPage("userManageBalance", self.currentUser))
 		self.logOutBtn = tkb.Button(self.accountSettingsSection, text="Log Out", command=self.logOutUser)
 		self.openDeleteAccountBtn = tkb.Button(self.accountSettingsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
 		# Position those buttons

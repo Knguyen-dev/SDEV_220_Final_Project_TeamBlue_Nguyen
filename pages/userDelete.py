@@ -18,6 +18,7 @@ class userDelete(tk.Frame):
 	def __init__(self, master, app):
 		super().__init__(master)
 		self.app =  app
+		self.master = master
 		
 		# Create the page section
 		self.deletePage = tkb.Frame(self)

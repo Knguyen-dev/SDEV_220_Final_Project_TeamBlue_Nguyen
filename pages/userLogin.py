@@ -23,6 +23,7 @@ class userLogin(tk.Frame):
 	def __init__(self, master, app):
 		super().__init__(master)
 		self.app = app
+		self.master = master
 
 		# Create the frame that contains all of the widgets and things on page
 		self.loginPage = tkb.Frame(self)

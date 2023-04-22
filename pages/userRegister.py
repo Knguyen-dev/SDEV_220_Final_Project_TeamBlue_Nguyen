@@ -22,6 +22,7 @@ class userRegister(tk.Frame):
 	def __init__(self, master, app):
 		super().__init__(master)
 		self.app = app
+		self.master = master
 
 		# Create the frame that will contain all of the widgets and things on the page
 		self.registrationPage = tkb.Frame(self)

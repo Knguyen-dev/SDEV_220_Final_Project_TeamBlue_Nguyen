@@ -25,6 +25,7 @@ class userEdit(tk.Frame):
 	def __init__(self, master, app, currentUser):
 		super().__init__(master)
 		self.app = app
+		self.master = master
 
 		# User class instance representing the currently logged in user, passed from userPage
 		self.currentUser = currentUser
@@ -107,5 +108,5 @@ class userEdit(tk.Frame):
 				"id": self.master.loggedinUser
 			})
 
-		# Ok after edits are done, we should take the user back to the userPage
+		# Ok after edits are done, we should take the user back to the userPage, where user can see updated changes
 		self.master.openPage("userPage", self.master.loggedinUser)
