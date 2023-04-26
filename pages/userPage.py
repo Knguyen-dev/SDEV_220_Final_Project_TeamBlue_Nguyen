@@ -54,7 +54,7 @@ class userPage(tk.Frame):
 		# Create and position buttons for the profileBtnsSection
 		self.openEditAccountBtn = tkb.Button(self.profileBtnsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
 		self.openManageBalanceBtn = tkb.Button(self.profileBtnsSection, text="Manage Wallet", command=lambda: self.master.openPage("userManageBalance", self.currentUser))
-		self.logOutBtn = tkb.Button(self.profileBtnsSection, text="Log out", command=self.logOutUser)
+		self.logOutBtn = tkb.Button(self.profileBtnsSection, text="Log out", command=self.master.logOutUser)
 		self.openDeleteAccountBtn = tkb.Button(self.profileBtnsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
 		self.openEditAccountBtn.grid(row=0, column=0, padx=5, pady=5)
 		self.openManageBalanceBtn.grid(row=1, column=0, padx=5, pady=5)
@@ -88,9 +88,8 @@ class userPage(tk.Frame):
 		self.userDetailsSection.grid(row=0, column=1, sticky=tk.N, padx=(150, 200))
 
 
-	# Create frame or section to show the image or avatar of the user's account
+	## Create frame or section to show the image or avatar of the user's account
 	def createImageFrame(self):
-
 		self.imageFrame = tk.Canvas(self.userPage, highlightbackground="#eee", highlightthickness=1)
 		response = urlopen(self.userAvatarSource)
 		data = response.read()
@@ -102,16 +101,6 @@ class userPage(tk.Frame):
 		image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
 		self.imageFrame.grid(row=0, column=0, padx=40)
 	
-		# self.imageFrame = tkb.Frame(self.userPage)
-		# response = urlopen(self.userAvatarSource)
-		# data = response.read()
-		# image = Image.open(io.BytesIO(data))
-		# image = image.resize((120, 120))
-		# image = ImageTk.PhotoImage(image=image)
-		# image_label = tkb.Label(self.imageFrame, image=image)
-		# image_label.image = image
-		# image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
-		# self.imageFrame.grid(row=0, column=0, sticky="NS", ipadx=20)
 
 	# Get the user information; login process guarantees that an existing and valid userID exists, so we can be sure that this query always brings the right user data
 	def getUser(self, id):
@@ -119,10 +108,10 @@ class userPage(tk.Frame):
 		user = self.master.cursor.fetchone()
 		return user
 	
-	## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
-	def logOutUser(self):
-		self.master.loggedinUser = None
-		# Change userButton so that it redirects to the login page 
-		self.master.userButton.configure(text="Login", command=lambda: self.master.openPage("userLogin"))
-		self.master.openPage("userLogin")
-		return
+	# ## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
+	# def logOutUser(self):
+	# 	self.master.loggedinUser = None
+	# 	# Change userButton so that it redirects to the login page 
+	# 	self.master.userButton.configure(text="Login", command=lambda: self.master.openPage("userLogin"))
+	# 	self.master.openPage("userLogin")
+	# 	return

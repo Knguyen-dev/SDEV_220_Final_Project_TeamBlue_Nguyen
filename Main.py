@@ -97,6 +97,16 @@ class App(tk.Tk):
 		searchItem = self.searchBar.get()
 		self.openPage("homePage", searchItem)
 
+	
+	## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
+	# NOTE: Put in main since it's needed in both userPage and userChangePassword
+	def logOutUser(self):
+		self.loggedinUser = None
+		# Change userButton so that it redirects to the login page 
+		self.userButton.configure(text="Login", command=lambda: self.openPage("userLogin"))
+		self.openPage("userLogin")
+		return
+
 
 if __name__ == "__main__":
     app = App()

@@ -15,10 +15,6 @@ from classes.User import User
 import classes.utilities as Utilities
 
 
-
-
-# NOTE: Avatar is still not something to be edited yet
-
 # Class or page for editing the current user's account; for changing account information such as name, email, etc.
 # NOTE: Page will link to pages for changing the user's password and managing the user's wallet
 class userEdit(tk.Frame): 
@@ -47,18 +43,10 @@ class userEdit(tk.Frame):
 		# Create button section for edit page
 		self.editBtnSection = tkb.Frame(self.inputEditSection)
 		
-		# Create buttons for editBtnSection
-		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)
-
-
-		'''
-		MAKE PAGE FOR CHANGING USER PASSWORDS
-		
-		'''
-
-
-
-		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password")
+		# Create buttons for editBtnSection; this will be the button to confirm edits on the user's account
+		# Then the openChangePasswordButton will open the page to change the user's password
+		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)		
+		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password", command=lambda: self.master.openPage("userChangePassword"))
 		
 		# Position your buttons
 		self.confirmEditBtn.grid(row=0, column=0, padx=10, pady=10)
@@ -114,5 +102,4 @@ class userEdit(tk.Frame):
 				"id": self.master.loggedinUser
 			})
 
-		# Ok after edits are done, we should take the user back to the userPage, where user can see updated changes
-		self.master.openPage("userPage", self.master.loggedinUser)
+		# After they change their password, we log them out of their account. 
