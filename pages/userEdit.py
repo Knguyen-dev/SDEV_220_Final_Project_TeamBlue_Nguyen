@@ -14,7 +14,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes.User import User
 import classes.utilities as Utilities
 
-
 # Class or page for editing the current user's account; for changing account information such as name, email, etc.
 # NOTE: Page will link to pages for changing the user's password and managing the user's wallet
 class userEdit(tk.Frame): 

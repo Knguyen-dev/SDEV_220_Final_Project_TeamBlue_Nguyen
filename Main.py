@@ -97,7 +97,6 @@ class App(tk.Tk):
 		searchItem = self.searchBar.get()
 		self.openPage("homePage", searchItem)
 
-	
 	## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
 	# NOTE: Put in main since it's needed in both userPage and userChangePassword
 	def logOutUser(self):
