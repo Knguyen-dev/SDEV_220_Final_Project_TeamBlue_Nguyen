@@ -24,8 +24,7 @@ class userPage(tk.Frame):
 		# Create the frame where all of the user information will lay
 		self.userPage = tkb.Frame(self)
 		self.userPage.pack(fill=BOTH, expand=True)
-		self.userPage.grid_columnconfigure(0, weight=1)
-		
+
 		# Get row of data (tuple) that corresponds with "userID" from the Users tabele 
 		self.userData = self.getUser(userID)
 		
@@ -34,7 +33,6 @@ class userPage(tk.Frame):
 		self.currentUser = User(self.userData[1], self.userData[2], self.userData[3], self.userData[6], self.userData[4])
 		self.currentUser.setUserBalance(self.userData[5])
 		self.currentUser.setUserPoints(self.userData[7])
-		# should also update the points and balance
 
 		# Represents the http URL for the image
 		self.userAvatarSource = self.userData[9] 
@@ -42,62 +40,78 @@ class userPage(tk.Frame):
 		# Represents names of user attribute from the User class
 		self.userAttributeNames = ["Username", "First Name", "Last Name", "Email", "Shipping Address", "Balance", "Points"]
 
+		# Call functions that create image and user frames
 		self.createImageFrame()
 		self.createUserFrame()
-
-	def createUserFrame(self):
-		# Create section that stores all of the details for the user account; giving room for account manipulation and other feature elements
-		self.userDetailsSection = tkb.LabelFrame(self.userPage, borderwidth=2, relief="groove")
-		self.userDetailsSection.grid(row=0, column=1, ipadx=100, sticky="NSEW")
-
-		# Create section that only stores user info and create section that contain recent purchases; nest both of those in the userDetailsSection section
-		self.userInfoSection = tkb.LabelFrame(self.userDetailsSection, text="User information")
-		self.userInfoSection.grid(row=0, column=0)
-		self.recentPurchasesSection = tkb.LabelFrame(self.userDetailsSection, text="Recent Purchases", borderwidth=2, relief="groove")
-		self.recentPurchasesSection.grid(row=1, column=0)
-
-		# Here's an example purchase to see where the purchase section is
-		self.samplePurchase = tkb.Label(self.recentPurchasesSection, text="1. Example Purchase")
-
-		'''
-		Here would be a for loop to loop through all of those purchases and grid them on the recent purchase section
-		
-		'''
-		self.samplePurchase.grid(row=0, column=0)
+		self.createProfileBtnsSection()
 
 
-		# Create section that contains buttons relating to manipulating the user's account (account settings), such as logging out, editing account info, etc.
-		self.accountSettingsSection = tkb.LabelFrame(self.userDetailsSection, text="Account Settings", borderwidth=2, relief="groove")
-		self.accountSettingsSection.grid(row=2, column=0)
-
-		# create buttons for logging out user, and opening the pages where you edit or delete your account 
-		self.openEditAccountBtn = tkb.Button(self.accountSettingsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
-		self.openManageBalanceBtn = tkb.Button(self.accountSettingsSection, text="Manage Wallet Balance", command=lambda: self.master.openPage("userManageBalance", self.currentUser))
-		self.logOutBtn = tkb.Button(self.accountSettingsSection, text="Log Out", command=self.logOutUser)
-		self.openDeleteAccountBtn = tkb.Button(self.accountSettingsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
-		# Position those buttons
+	# Create an edit profile button that takes them to the edit account page and position it
+	def createProfileBtnsSection(self):
+		# Create section for containing buttons to manage your account
+		self.profileBtnsSection = tkb.Frame(self.userPage)
+		self.profileBtnsSection.grid(row=1, column=0)
+		# Create and position buttons for the profileBtnsSection
+		self.openEditAccountBtn = tkb.Button(self.profileBtnsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
+		self.openManageBalanceBtn = tkb.Button(self.profileBtnsSection, text="Manage Wallet", command=lambda: self.master.openPage("userManageBalance", self.currentUser))
+		self.logOutBtn = tkb.Button(self.profileBtnsSection, text="Log out", command=self.logOutUser)
+		self.openDeleteAccountBtn = tkb.Button(self.profileBtnsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
 		self.openEditAccountBtn.grid(row=0, column=0, padx=5, pady=5)
 		self.openManageBalanceBtn.grid(row=1, column=0, padx=5, pady=5)
 		self.logOutBtn.grid(row=2, column=0, padx=5, pady=5)
 		self.openDeleteAccountBtn.grid(row=3, column=0, padx=5, pady=5)
 
-		# Create labels for all of the user's attributes using the names of those attributes
-		for x in range(len(self.userAttributeNames)):
-			userAttributeLabel = tkb.Label(self.userInfoSection, text=f"{self.userAttributeNames[x]}: {self.currentUser.getAttributeByName(self.userAttributeNames[x])}")
-			userAttributeLabel.grid(row=x, column=0)
 
-	# Create image section
+	def createRecentPurchasesSection():
+		pass
+
+	## Create frame or section to show user information 
+	def createUserFrame(self):
+		# Create main section for all user information 
+		self.userDetailsSection = tk.Canvas(self.userPage, width=100, bg="red")
+		# Create section for show user account or user instance attributes
+		self.userInfoSection = tkb.Frame(self.userDetailsSection)
+
+		# Put all labels in userInfoSection
+		# Create username label, make it big and visible since for aesthetic purposes
+		usernameLabel = tkb.Label(self.userInfoSection, text=f"{self.userAttributeNames[0]}: {self.currentUser.getUsername()}", font=('Helvetica', 32, 'bold'))
+		usernameLabel.grid(row=0, column=0, columnspan=3, padx=20, pady=10)
+
+		# Create labels for the other attributes for the user; exclude username from iteration
+		# We start at 1 because we want to avoid row index 0 since the username label is already occupying that entire row 
+		for x in range(1, len(self.userAttributeNames)):
+			userAttributeLabel = tkb.Label(self.userInfoSection, text=f"{self.userAttributeNames[x]}: {self.currentUser.getAttributeByName(self.userAttributeNames[x])}", font=("Helvetica", 18, "bold"))
+			userAttributeLabel.grid(row=x, column=0, pady=5)
+			
+		# Position userDetailsSection on the userPage
+		self.userInfoSection.pack(fill=X)
+		self.userDetailsSection.grid(row=0, column=1, sticky=tk.N, padx=(150, 200))
+
+
+	# Create frame or section to show the image or avatar of the user's account
 	def createImageFrame(self):
-		self.imageFrame = tkb.Frame(self.userPage)
+
+		self.imageFrame = tk.Canvas(self.userPage, highlightbackground="#eee", highlightthickness=1)
 		response = urlopen(self.userAvatarSource)
 		data = response.read()
 		image = Image.open(io.BytesIO(data))
-		image = image.resize((120, 120))
+		image = image.resize((350, 350))
 		image = ImageTk.PhotoImage(image=image)
 		image_label = tkb.Label(self.imageFrame, image=image)
 		image_label.image = image
 		image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
-		self.imageFrame.grid(row=0, column=0, sticky="NS", ipadx=20)
+		self.imageFrame.grid(row=0, column=0, padx=40)
+	
+		# self.imageFrame = tkb.Frame(self.userPage)
+		# response = urlopen(self.userAvatarSource)
+		# data = response.read()
+		# image = Image.open(io.BytesIO(data))
+		# image = image.resize((120, 120))
+		# image = ImageTk.PhotoImage(image=image)
+		# image_label = tkb.Label(self.imageFrame, image=image)
+		# image_label.image = image
+		# image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
+		# self.imageFrame.grid(row=0, column=0, sticky="NS", ipadx=20)
 
 	# Get the user information; login process guarantees that an existing and valid userID exists, so we can be sure that this query always brings the right user data
 	def getUser(self, id):

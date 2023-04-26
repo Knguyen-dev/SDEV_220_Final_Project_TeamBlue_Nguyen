@@ -49,13 +49,20 @@ class userEdit(tk.Frame):
 		
 		# Create buttons for editBtnSection
 		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)
-		self.openManageBalanceBtn = tkb.Button(self.editBtnSection, text="Manage Account Balance")
+
+
+		'''
+		MAKE PAGE FOR CHANGING USER PASSWORDS
+		
+		'''
+
+
+
 		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password")
 		
 		# Position your buttons
 		self.confirmEditBtn.grid(row=0, column=0, padx=10, pady=10)
-		self.openManageBalanceBtn.grid(row=0, column=1, padx=10, pady=10)
-		self.openChangePasswordBtn.grid(row=0, column=2, padx=10, pady=10)
+		self.openChangePasswordBtn.grid(row=0, column=1, padx=10, pady=10)
 
 		# Field names that will be edited; 
 		self.fieldNamesEdit = ["Username", "First Name", "Last Name", "Email", "Shipping Address"]
@@ -75,8 +82,7 @@ class userEdit(tk.Frame):
 		# Position the button section for the edits and position the buttons as well
 		self.editBtnSection.grid(row=len(self.fieldNamesEdit), column=0, columnspan=2)
 		self.confirmEditBtn.grid(row=0, column=0)
-		self.openManageBalanceBtn.grid(row=0, column=1)
-		self.openChangePasswordBtn.grid(row=0, column=2)
+		self.openChangePasswordBtn.grid(row=0, column=1)
 
 	## Function checks user accounts and then goes to make edits in the database if successful
 	def editUserAccount(self):

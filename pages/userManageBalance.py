@@ -108,6 +108,8 @@ class userManageBalance(tk.Frame):
 				return
 			newBalance -= inputAmount
 		
+		# Fix any rounding issues
+		newBalance = round(newBalance, 2)
 		# Then update their balance in the database in the database
 		with self.master.conn:
 			self.master.cursor.execute("UPDATE Users SET balance=:balance WHERE id=:id", 
