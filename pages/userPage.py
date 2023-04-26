@@ -40,11 +40,11 @@ class userPage(tk.Frame):
 		# Represents names of user attribute from the User class
 		self.userAttributeNames = ["Username", "First Name", "Last Name", "Email", "Shipping Address", "Balance", "Points"]
 
-		# Call functions that create image and user frames
-		self.createImageFrame()
-		self.createUserFrame()
-		self.createProfileBtnsSection()
-
+		# Call functions that create image and user frames that lay on userPage in a grid
+		self.createImageFrame() # row = 0, col = 0
+		self.createUserFrame() # row = 0, col = 1
+		self.createProfileBtnsSection() # row = 1, col = 0
+		self.createRecentPurchasesSection() # row = 1, col = 1
 
 	# Create an edit profile button that takes them to the edit account page and position it
 	def createProfileBtnsSection(self):
@@ -61,14 +61,40 @@ class userPage(tk.Frame):
 		self.logOutBtn.grid(row=2, column=0, padx=5, pady=5)
 		self.openDeleteAccountBtn.grid(row=3, column=0, padx=5, pady=5)
 
+	## Function creates section for recent purchases 
+	def createRecentPurchasesSection(self):
+		# Create section or frame for recent purchases and position it
+		self.recentPurchasesSection = tkb.Frame(self.userPage)
+		self.recentPurchasesSection.grid(row=1, column=1, ipadx=20, ipady=20)
 
-	def createRecentPurchasesSection():
-		pass
+		# Title or header for the recent purchases section
+		sectionTitle = tkb.Label(self.recentPurchasesSection, text="Your Recent Purchases", font=("Helvetica", 18, "bold"))
+		sectionTitle.pack()
+
+		# Create section or frame where we store the recent purchase labels and info like a list
+		self.purchaseListSection = tkb.Frame(self.recentPurchasesSection)
+		self.purchaseListSection.pack(ipadx=20, ipady=20) 
+
+		# Query for 3 of the most recent purchases made my the user; query using the user's id and selecting from the order
+		# NOTE: For this example, we filled 3 "orders" outs in the Orders table to help visualize this process;
+		with self.master.conn:
+
+			# From the Orders table, we are going to flip and query the table in descending order by the id or primary keys
+			# This is just another way to get maybe the top three most recent purchases by the user
+			self.master.cursor.execute("SELECT * FROM Orders ORDER BY id DESC LIMIT 3")
+			recentPurchases = self.master.cursor.fetchall()
+
+			# Create labels and buttons associated with each purchase and position it
+			for x in range(len(recentPurchases)):
+				purchaseLabel = tkb.Label(self.purchaseListSection, text=f"Purchase ID: {recentPurchases[x][0]} - Total Quantity: {recentPurchases[x][3]} - Total Cost: {recentPurchases[x][1]}", font=("Helvetica", 12, "bold"))
+				purchaseInfoBtn = tkb.Button(self.purchaseListSection, text="More Info")
+				purchaseLabel.grid(row=x, column=0, padx=5, pady=5)
+				purchaseInfoBtn.grid(row=x, column=1, padx=5, pady=5)
 
 	## Create frame or section to show user information 
 	def createUserFrame(self):
 		# Create main section for all user information 
-		self.userDetailsSection = tk.Canvas(self.userPage, width=100, bg="red")
+		self.userDetailsSection = tk.Canvas(self.userPage, width=100)
 		# Create section for show user account or user instance attributes
 		self.userInfoSection = tkb.Frame(self.userDetailsSection)
 
@@ -82,11 +108,9 @@ class userPage(tk.Frame):
 		for x in range(1, len(self.userAttributeNames)):
 			userAttributeLabel = tkb.Label(self.userInfoSection, text=f"{self.userAttributeNames[x]}: {self.currentUser.getAttributeByName(self.userAttributeNames[x])}", font=("Helvetica", 18, "bold"))
 			userAttributeLabel.grid(row=x, column=0, pady=5)
-			
 		# Position userDetailsSection on the userPage
 		self.userInfoSection.pack(fill=X)
 		self.userDetailsSection.grid(row=0, column=1, sticky=tk.N, padx=(150, 200))
-
 
 	## Create frame or section to show the image or avatar of the user's account
 	def createImageFrame(self):
@@ -101,17 +125,8 @@ class userPage(tk.Frame):
 		image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
 		self.imageFrame.grid(row=0, column=0, padx=40)
 	
-
 	# Get the user information; login process guarantees that an existing and valid userID exists, so we can be sure that this query always brings the right user data
 	def getUser(self, id):
 		self.master.cursor.execute(f"SELECT * FROM Users WHERE id={id}")
 		user = self.master.cursor.fetchone()
 		return user
-	
-	# ## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
-	# def logOutUser(self):
-	# 	self.master.loggedinUser = None
-	# 	# Change userButton so that it redirects to the login page 
-	# 	self.master.userButton.configure(text="Login", command=lambda: self.master.openPage("userLogin"))
-	# 	self.master.openPage("userLogin")
-	# 	return
