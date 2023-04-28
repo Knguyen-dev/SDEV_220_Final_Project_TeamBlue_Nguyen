@@ -14,11 +14,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from classes.User import User
 import classes.utilities as Utilities
 
-
-
-
-# NOTE: Avatar is still not something to be edited yet
-
 # Class or page for editing the current user's account; for changing account information such as name, email, etc.
 # NOTE: Page will link to pages for changing the user's password and managing the user's wallet
 class userEdit(tk.Frame): 
@@ -47,15 +42,14 @@ class userEdit(tk.Frame):
 		# Create button section for edit page
 		self.editBtnSection = tkb.Frame(self.inputEditSection)
 		
-		# Create buttons for editBtnSection
-		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)
-		self.openManageBalanceBtn = tkb.Button(self.editBtnSection, text="Manage Account Balance")
-		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password")
+		# Create buttons for editBtnSection; this will be the button to confirm edits on the user's account
+		# Then the openChangePasswordButton will open the page to change the user's password
+		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)		
+		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password", command=lambda: self.master.openPage("userChangePassword"))
 		
 		# Position your buttons
 		self.confirmEditBtn.grid(row=0, column=0, padx=10, pady=10)
-		self.openManageBalanceBtn.grid(row=0, column=1, padx=10, pady=10)
-		self.openChangePasswordBtn.grid(row=0, column=2, padx=10, pady=10)
+		self.openChangePasswordBtn.grid(row=0, column=1, padx=10, pady=10)
 
 		# Field names that will be edited; 
 		self.fieldNamesEdit = ["Username", "First Name", "Last Name", "Email", "Shipping Address"]
@@ -75,8 +69,7 @@ class userEdit(tk.Frame):
 		# Position the button section for the edits and position the buttons as well
 		self.editBtnSection.grid(row=len(self.fieldNamesEdit), column=0, columnspan=2)
 		self.confirmEditBtn.grid(row=0, column=0)
-		self.openManageBalanceBtn.grid(row=0, column=1)
-		self.openChangePasswordBtn.grid(row=0, column=2)
+		self.openChangePasswordBtn.grid(row=0, column=1)
 
 	## Function checks user accounts and then goes to make edits in the database if successful
 	def editUserAccount(self):
@@ -108,5 +101,4 @@ class userEdit(tk.Frame):
 				"id": self.master.loggedinUser
 			})
 
-		# Ok after edits are done, we should take the user back to the userPage, where user can see updated changes
-		self.master.openPage("userPage", self.master.loggedinUser)
+		# After they change their password, we log them out of their account. 
