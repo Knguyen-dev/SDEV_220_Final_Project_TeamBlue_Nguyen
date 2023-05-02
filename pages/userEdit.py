@@ -1,16 +1,5 @@
 import tkinter as tk
-from tkinter import Scrollbar, ttk
-import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
-from ttkbootstrap.style import Bootstyle
-from PIL import Image, ImageTk
-from urllib.request import urlopen
-import io
-import sqlite3
-import hashlib
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from tkinter import ttk
 from classes.User import User
 import classes.utilities as Utilities
 
@@ -26,26 +15,26 @@ class userEdit(tk.Frame):
 		self.currentUser = currentUser
 
 		# Create the frame that contains all the widgets and elements on the editPage
-		self.editPage = tkb.Frame(self)
+		self.editPage = ttk.Frame(self)
 		self.editPage.pack(expand=True)
 		
 		# Create message section that will alert the user about all the events on the editing page
-		self.editMessageSection = tkb.Frame(self.editPage)
-		self.editMessageLabel = tkb.Label(self.editMessageSection, text="")
+		self.editMessageSection = ttk.Frame(self.editPage)
+		self.editMessageLabel = ttk.Label(self.editMessageSection, text="")
 		self.editMessageSection.pack(pady=10)
 		self.editMessageLabel.grid(row=0, column=0)
 
 		# Create section for inputting information about editing accounts and create a section for buttons 
-		self.inputEditSection = tkb.LabelFrame(self.editPage, text="Edit Account Information")
+		self.inputEditSection = ttk.LabelFrame(self.editPage, text="Edit Account Information")
 		self.inputEditSection.pack(ipadx=20, ipady=10)
 		
 		# Create button section for edit page
-		self.editBtnSection = tkb.Frame(self.inputEditSection)
+		self.editBtnSection = ttk.Frame(self.inputEditSection)
 		
 		# Create buttons for editBtnSection; this will be the button to confirm edits on the user's account
 		# Then the openChangePasswordButton will open the page to change the user's password
-		self.confirmEditBtn = tkb.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)		
-		self.openChangePasswordBtn = tkb.Button(self.editBtnSection, text="Change Password", command=lambda: self.master.openPage("userChangePassword"))
+		self.confirmEditBtn = ttk.Button(self.editBtnSection, text="Confirm Edits", command=self.editUserAccount)		
+		self.openChangePasswordBtn = ttk.Button(self.editBtnSection, text="Change Password", command=lambda: self.master.openPage("userChangePassword"))
 		
 		# Position your buttons
 		self.confirmEditBtn.grid(row=0, column=0, padx=10, pady=10)
@@ -59,8 +48,8 @@ class userEdit(tk.Frame):
 		# Then fill out the entry widgets with the current information from the user's account
 		# Store the entry widgets for later
 		for x in range(len(self.fieldNamesEdit)):
-			fieldLabelEdit = tkb.Label(self.inputEditSection, text=f"{self.fieldNamesEdit[x]}:")
-			fieldEntryEdit = tkb.Entry(self.inputEditSection)
+			fieldLabelEdit = ttk.Label(self.inputEditSection, text=f"{self.fieldNamesEdit[x]}:")
+			fieldEntryEdit = ttk.Entry(self.inputEditSection)
 			fieldEntryEdit.insert(0, self.currentUser.getAttributeByName(self.fieldNamesEdit[x]))
 			fieldLabelEdit.grid(row=x, column=0, padx=5, pady=10)
 			fieldEntryEdit.grid(row=x, column=1, padx=5, pady=10)

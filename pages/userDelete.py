@@ -1,16 +1,6 @@
 import tkinter as tk
-from tkinter import Scrollbar, ttk
-import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
-from ttkbootstrap.style import Bootstyle
-from PIL import Image, ImageTk
-from urllib.request import urlopen
-import io
-import sqlite3
+from tkinter import ttk
 import hashlib
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import classes.utilities as Utilities
 
 # Page used for deleting the account of the current logged in user
@@ -21,22 +11,22 @@ class userDelete(tk.Frame):
 		self.master = master
 		
 		# Create the page section
-		self.deletePage = tkb.Frame(self)
+		self.deletePage = ttk.Frame(self)
 		self.deletePage.pack(expand=True)
 
 		# create message section that will alert the user about events on the delete account page
-		self.deleteMessageSection = tkb.Frame(self.deletePage)
-		self.deleteMessageLabel = tkb.Label(self.deleteMessageSection, text="")
+		self.deleteMessageSection = ttk.Frame(self.deletePage)
+		self.deleteMessageLabel = ttk.Label(self.deleteMessageSection, text="")
 		self.deleteMessageSection.pack(pady=10)
 		self.deleteMessageLabel.grid(row=0, column=0)
 
 		# Create sectikno for inputting information to delete the account of the current logged in user
-		self.inputDeleteSection = tkb.LabelFrame(self.deletePage, text="Enter credentials of the currently logged in account")
+		self.inputDeleteSection = ttk.LabelFrame(self.deletePage, text="Enter credentials of the currently logged in account")
 		self.inputDeleteSection.pack(ipadx=5, ipady=10)
 
 		# Button section for delete page; mainly just going to be the delete button itself for now
-		self.deleteBtnSection = tkb.Frame(self.inputDeleteSection)
-		self.confirmDeleteBtn = tkb.Button(self.deleteBtnSection, text="Delete Account", command=self.deleteUserAccount)
+		self.deleteBtnSection = ttk.Frame(self.inputDeleteSection)
+		self.confirmDeleteBtn = ttk.Button(self.deleteBtnSection, text="Delete Account", command=self.deleteUserAccount)
 
 		# Field names needed to delete your account; using username instead of email because username is unique
 		self.fieldNamesDelete = ["Username", "Password", "Retype Password"]
@@ -44,8 +34,8 @@ class userDelete(tk.Frame):
 
 		# Create labels and entry widgest, position them, and position the deleteBtnSection at teh bottom
 		for x in range(len(self.fieldNamesDelete)):
-			fieldLabelDelete = tkb.Label(self.inputDeleteSection, text=f"{self.fieldNamesDelete[x]}:")
-			fieldEntryDelete = tkb.Entry(self.inputDeleteSection)
+			fieldLabelDelete = ttk.Label(self.inputDeleteSection, text=f"{self.fieldNamesDelete[x]}:")
+			fieldEntryDelete = ttk.Entry(self.inputDeleteSection)
 			fieldLabelDelete.grid(row=x, column=0, padx=5, pady=10)
 			fieldEntryDelete.grid(row=x, column=1, padx=5, pady=10)
 			self.entryDeleteList.append(fieldEntryDelete)

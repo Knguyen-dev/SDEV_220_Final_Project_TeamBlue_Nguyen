@@ -1,5 +1,5 @@
 # NOTE: Just a draft, not set in stone; since we're using tkinter and databases our code is likely to change a lot if we tihnk about how things will work more
-
+import locale
 
 # Class representing what individual users or consumer accounts may look like 
 class User:
@@ -13,9 +13,12 @@ class User:
 		
 		# When we create accounts, the points and amount of money is going to be 0, accounts don't start off with money
 		# As well as this recentPUrchases is empty
-		self._userPoints = 0 
-		self._userBalance = 0 
+		self._userPoints = 0
+		self._userBalance = 0
 		self._recentPurchases = [] # list of integers that represent id for purchase table
+
+		locale.setlocale(locale.LC_ALL, '')
+
 
 	# Setter functions to change attributes of User instances; obviously include functionality to save the new information to a database when finished.
 	def setUsername(self, newUsername):
@@ -57,7 +60,7 @@ class User:
 	def getPoints(self):
 		return self._userPoints
 	def getBalance(self):
-		return self._userBalance
+		return locale.currency(self._userBalance)
 	def getRecentPurchases(self):
 		return self._recentPurchases
 	

@@ -1,16 +1,5 @@
 import tkinter as tk
-from tkinter import Scrollbar, ttk
-import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
-from ttkbootstrap.style import Bootstyle
-from PIL import Image, ImageTk
-from urllib.request import urlopen
-import io
-import sqlite3
-import hashlib
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from tkinter import ttk
 from classes.User import User
 import classes.utilities as Utilities
 
@@ -24,42 +13,42 @@ class userManageBalance(tk.Frame):
 		self.currentUser = currentUser
 
 		# Create a frame where all of the balance information information will be 
-		self.balancePage = tkb.Frame(self)
+		self.balancePage = ttk.Frame(self)
 		self.balancePage.pack(expand=True)
 		
 		# Creation section and label for showing the user events on the page for managing their balance
-		self.balanceMessageSection = tkb.Frame(self.balancePage)
-		self.balanceMessageLabel = tkb.Label(self.balanceMessageSection, text="")
+		self.balanceMessageSection = ttk.Frame(self.balancePage)
+		self.balanceMessageLabel = ttk.Label(self.balanceMessageSection, text="")
 		self.balanceMessageSection.pack(pady=10)
 		self.balanceMessageLabel.grid(row=0, column=0)
 
 		# Section for inputting the balance information and showing balance info 
-		self.inputBalanceSection = tkb.LabelFrame(self.balancePage, text="Balance info")
+		self.inputBalanceSection = ttk.LabelFrame(self.balancePage, text="Balance info")
 		self.inputBalanceSection.pack(ipadx=20, ipady=10)
 
 		# Section for containing buttons for the balance page
-		self.balanceBtnSection = tkb.Frame(self.inputBalanceSection)
+		self.balanceBtnSection = ttk.Frame(self.inputBalanceSection)
 
 		# Two types of fields that relate to "balance" and money. However user will not be able to influence "points"
 		# NOTE: List will only be used for making labels in balanceInfoSection; label and entry widget for input will be done separately
 		self.fieldNamesBalance = ["Balance", "Points"]
 		
 		# Create the point and balance label; the balance label will be updated when the user updates their balance on the page
-		self.userBalanceLabel = tkb.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[0]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[0])}")
-		self.userPointsLabel = tkb.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[1]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[1])}")
+		self.userBalanceLabel = ttk.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[0]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[0])}")
+		self.userPointsLabel = ttk.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[1]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[1])}")
 		self.userPointsLabel.grid(row=0, column=0)
 		self.userBalanceLabel.grid(row=1, column=0)
 
 		# Create label and entry widget for input balance section; then psoition the balance button section below it
-		self.fieldBalanceLabel = tkb.Label(self.inputBalanceSection, text="Amount:")
-		self.fieldBalanceEntry = tkb.Entry(self.inputBalanceSection)
+		self.fieldBalanceLabel = ttk.Label(self.inputBalanceSection, text="Amount:")
+		self.fieldBalanceEntry = ttk.Entry(self.inputBalanceSection)
 		self.fieldBalanceLabel.grid(row=len(self.fieldNamesBalance), column=0, padx=5, pady=10)
 		self.fieldBalanceEntry.grid(row=len(self.fieldNamesBalance), column=1, padx=5, pady=10) 
 		self.balanceBtnSection.grid(row=len(self.fieldNamesBalance) + 1, column=0, columnspan=2, sticky=tk.S)
 
 		# Create buttons, so that user can add or subtract a certain balance from their total balance
-		self.addBalanceBtn = tkb.Button(self.balanceBtnSection, text="Add Balance", command=lambda: self.updateBalance("ADD"))
-		self.subtractBalanceBtn = tkb.Button(self.balanceBtnSection, text="Subtract Balance", command=lambda: self.updateBalance("SUBTRACT"))
+		self.addBalanceBtn = ttk.Button(self.balanceBtnSection, text="Add Balance", command=lambda: self.updateBalance("ADD"))
+		self.subtractBalanceBtn = ttk.Button(self.balanceBtnSection, text="Subtract Balance", command=lambda: self.updateBalance("SUBTRACT"))
 		self.addBalanceBtn.grid(row=0, column=0, padx=5, pady=10)
 		self.subtractBalanceBtn.grid(row=0, column=1, padx=5, pady=10)
 

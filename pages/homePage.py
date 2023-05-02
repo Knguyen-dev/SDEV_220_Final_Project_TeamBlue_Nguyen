@@ -1,12 +1,7 @@
 from threading import Thread
 import tkinter as tk
-from tkinter import Scrollbar, ttk
-import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
-from ttkbootstrap.style import Bootstyle
+from tkinter import ttk
 from PIL import Image, ImageTk
-from urllib.request import urlopen
-import io
 import sqlite3
 
 # Home page class
@@ -21,58 +16,59 @@ class homePage(tk.Frame):
         ## homePage Frame to make page responsive
         # Actually a giant text box with a lot of whitespace so that our product cards can go on there. We put it in a state of disabled so that
         # The user doesn't accidentally type on it, with it being a text box
-        self.homePage = tkb.Text(self, bd = 10, wrap="char", borderwidth=1, highlightthickness=0, state="disabled", spacing1 = 50, spacing2 = 20, insertofftime=0)
-        self.homePage.pack(fill=BOTH, expand=True)
+        self.homePage = tk.Text(self, bd = 10, wrap="char", borderwidth=1, highlightthickness=0, state="disabled", spacing1 = 50, spacing2 = 20, insertofftime=0, cursor="arrow")
+        self.homePage.pack(fill='both', expand=True)
 
         ## Database variables
         self.conn = sqlite3.connect('assets/PyProject.db')
         self.cursor = self.conn.cursor()
-
+        self.homePage.tag_configure("center", justify='center') 
         ## For searchbar if search is empty dont call searchProducts()
         if args:
             if args[0] is not None:
                 self.searchProducts(args[0])
         else:
             self.getProducts()
+            
+        self.homePage.tag_add("center", 1.0, "end")
 
 
 
     # Creates product "cards" or "sections" for "product" which is an sqlite row entry
     def createProductDisplay(self, product):
         # Represents product card, main card
-        product_card = tk.Frame(self.homePage, width=200, height=200,  highlightbackground="#eee", highlightthickness=1, padx=3, pady=2)
+        product_card = ttk.Frame(self.homePage, width=200, height=200, relief="solid", padding=10)
 
         # Image section
-        imageFrame = tkb.Frame(product_card, height=120)
+        imageFrame = ttk.Frame(product_card, height=120)
 
         # Opens url, reads image data, create and resize our image; format it with tkinter and position on screen 
-        response = urlopen(product[4])
-        data = response.read()
-        image = Image.open(io.BytesIO(data))
+        image = Image.open(product[4])
         image = image.resize((120, 120))
         image = ImageTk.PhotoImage(image=image)
-        image_label = tkb.Label(imageFrame, image=image)
+        image_label = ttk.Label(imageFrame, image=image)
         image_label.image = image
         image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
-        imageFrame.pack(fill=X)
+        imageFrame.pack(fill='x')
 
         # Represents the detail section of the product card; item name, price, buttons, etc.
         # Below are corresponding labels and widgest for this section
-        detailFrame = tkb.Frame(product_card, height=80)
+        detailFrame = ttk.Frame(product_card, height=80)
 
-        price_label = tkb.Label(detailFrame, text=f"$ {product[2]}", font=("Helvetica", 10), width=40, anchor="w")
+        price_label = ttk.Label(detailFrame, text=f"$ {product[2]}", font=("Helvetica", 10), width=40, anchor="w")
         price_label.grid(row=1, column=0, sticky=tk.NSEW)
 
-        buyButton = tkb.Button(detailFrame, text="Add to cart")
+        buyButton = ttk.Button(detailFrame, text="Add to cart", command= lambda: self.master.CartClass.updateCartItem(product, 1))
         buyButton.grid(row=1, column=1, sticky=tk.NS)
 
-        name_label = tkb.Label(detailFrame, text=product[1], font=("Helvetica", 10, 'bold'), width=40, anchor="w")
+        name_label = ttk.Label(detailFrame, text=product[1], font=("Helvetica", 10, 'bold'), width=40, anchor="w")
         name_label.grid(row=0, column=0, sticky=tk.NSEW)
 
         # Assign a command to the name label so that it calls function when user presses it
         name_label.bind("<Button-1>", lambda e:self.master.openPage("productPage", product[0]))
-        detailFrame.pack(fill=X, expand=True)
+        detailFrame.pack(fill='x', expand=True)
         
+
 
         ## Changes state of homePage to Normal to allow the insertation of product card, then changes back to disabled
         self.homePage.configure(state="normal")
@@ -95,7 +91,7 @@ class homePage(tk.Frame):
             for row in rows:
                 self.thread(row)
         else:
-            self.emptyLabel = tkb.Label(self.homePage, text="Nothing was found.")
+            self.emptyLabel = ttk.Label(self.homePage, text="Nothing was found.")
             self.emptyLabel.pack()
 
     # Same thing as above function, but for all products

@@ -1,15 +1,10 @@
 import importlib
-import sys
 import sqlite3
 ## Tkinter and Tkinter Framework
 import tkinter as tk
-from tkinter import Scrollbar, ttk
-import ttkbootstrap as tkb
-from ttkbootstrap.constants import *
-from ttkbootstrap.style import Bootstyle
-## Image imports
-from PIL import Image, ImageTk
-from urllib.request import urlopen
+from tkinter import ttk
+from classes.ShoppingCart import *
+
 
 class App(tk.Tk):
 	def __init__(self):
@@ -21,9 +16,14 @@ class App(tk.Tk):
 		self.conn = sqlite3.connect('assets/PyProject.db')
 		self.cursor = self.conn.cursor()
 		self.loggedinUser = None
-
+		# This is where the magic happens
+		self.tk.call("source", "azure.tcl")
+		self.tk.call("set_theme", "dark")
+		self.CartClass = ShoppingCart()
 		self.createNavbar()
 		self.current_page = None      
+
+		self.bind('<Return>', self.searchFunction)
 		self.openPage("homePage")
 
 	## function: loadPage(page_name: str)
@@ -58,42 +58,42 @@ class App(tk.Tk):
 	## Creates the navbar and all respective buttons
 	def createNavbar(self):
 		# create the top menu
-		self.navbar = tkb.Frame(self, bootstyle="primary")
-		self.navbar.pack(fill=X, ipady=10, side=TOP)
+		self.navbar = ttk.Frame(self)
+		self.navbar.pack(fill="x", ipady=10, side="top")
 
 		#logo frame
-		self.logoFrame = tkb.Frame(self.navbar, bootstyle="primary")
-		self.logoFrame.pack(fill=Y, side=LEFT)
+		self.logoFrame = ttk.Frame(self.navbar)
+		self.logoFrame.pack(fill="y", side="left")
 		#logo
-		self.logo = tkb.Button(self.logoFrame, width=10, text="Kroger", command=lambda: self.openPage("homePage"))
-		self.logo.pack(side=LEFT, ipady=8, padx=2)
+		self.logo = ttk.Button(self.logoFrame, width=10, text="Kroger", command=lambda: self.openPage("homePage"))
+		self.logo.pack(side="left", ipady=8, padx=2)
 
 		# Search frame
-		self.searchFrame = tkb.Frame(self.navbar, bootstyle="primary")
-		self.searchFrame.pack(fill=Y, side=LEFT)
+		self.searchFrame = ttk.Frame(self.navbar)
+		self.searchFrame.pack(fill="y", side="left")
 		# Search bar and button
-		self.searchBar = tkb.Entry(self.searchFrame, width=180, bootstyle="secondary")
-		self.searchBar.pack(side=LEFT, ipady=8, padx=2)
-		self.searchButton = tkb.Button(master=self.searchFrame, text='Search', compound=RIGHT, command= lambda: self.searchFunction())
-		self.searchButton.pack(fill=Y, side=RIGHT)
+		self.searchBar = ttk.Entry(self.searchFrame, width=140)
+		self.searchBar.pack(side="left", ipady=8, padx=2, anchor="center")
+		self.searchButton = ttk.Button(master=self.searchFrame, text='Search', compound="right", command= lambda: self.searchFunction())
+		self.searchButton.pack(fill="y", side="right")
 
 		# user frame
-		self.userFrame = tkb.Frame(self.navbar, bootstyle="primary")
-		self.userFrame.pack(fill=Y, side=RIGHT)
+		self.userFrame = ttk.Frame(self.navbar)
+		self.userFrame.pack(fill="y", side="right")
 		# user / cart button
-		self.cartButton = ttk.Button(master=self.userFrame, text='Cart', compound=RIGHT, command=lambda: self.openPage("cartPage"))
-		self.cartButton.pack(side=LEFT, ipadx=10, fill=Y)
+		self.cartButton = ttk.Button(master=self.userFrame, text='Cart', compound="right", command=lambda: self.openPage("cartPage"))
+		self.cartButton.pack(side="left", ipadx=10, fill="y")
 
 		# create the userButton; by default it's set to "Login" and takes you to the login page, but once you log in, it changes to show your account
 		# NOTE: Logic for changing the button is in the userLogin page 
-		self.userButton = ttk.Button(master=self.userFrame, text='Login', compound=RIGHT, command=lambda: self.openPage("userLogin"))
-		self.userButton.pack(side=LEFT, ipadx=10, fill=Y)
+		self.userButton = ttk.Button(master=self.userFrame, text='Login', compound="right", command=lambda: self.openPage("userLogin"))
+		self.userButton.pack(side="left", ipadx=10, fill="y")
 		
 		
 	
 	## function searchFunction()
 	## Grabs text from inside of searchBar Entry and sends data to homePage
-	def searchFunction(self):
+	def searchFunction(self, e):
 		searchItem = self.searchBar.get()
 		self.openPage("homePage", searchItem)
 
@@ -105,6 +105,15 @@ class App(tk.Tk):
 		self.userButton.configure(text="Login", command=lambda: self.openPage("userLogin"))
 		self.openPage("userLogin")
 		return
+	
+	## Cart Manager Function
+	def handleCart(self, action, product=None):
+		if action == "add":
+			print("something")
+		elif action == "remove":
+			print("remove")
+		elif action == "edit":
+			self.cart[product]
 
 
 if __name__ == "__main__":
