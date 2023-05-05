@@ -79,9 +79,9 @@ class userLogin(tk.Frame):
 			
 			# If it passes then, the account login was successful, update the current logged in user so whole site can keep track
 			# of who is logged in
-			self.master.loggedinUser = data[0]
+			self.master.loggedinUser =  User(data[0], data[1], data[2], data[3], data[6], data[9], data[4], data[7], data[5])
 			
 		# Change userButton in navbar, now that we've logged in it should say "User" or "My Account" rather than just "login",
-		self.master.userButton.configure(text="User", command=lambda: self.master.openPage("userPage", self.master.loggedinUser))
+		self.master.userButton.configure(text="User", command=lambda: self.master.openPage("userPage"))
 		# Take user to the userPage now that they're logged in, passed the user ID of the current user that's logged in
-		self.master.openPage("userPage", self.master.loggedinUser)
+		self.master.openPage("userPage")

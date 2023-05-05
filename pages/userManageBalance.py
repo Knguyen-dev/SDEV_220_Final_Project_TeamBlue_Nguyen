@@ -2,15 +2,19 @@ import tkinter as tk
 from tkinter import ttk
 from classes.User import User
 import classes.utilities as Utilities
+import locale
 
 class userManageBalance(tk.Frame):
-	def __init__(self, master, app, currentUser):
+	def __init__(self, master, app):
 		super().__init__(master)
 		self.master = master
 		self.app = app
 
+		locale.setlocale(locale.LC_ALL, '')
+
 		# User class representing the currently logged in user, passed from userPage 
-		self.currentUser = currentUser
+		self.currentUser = self.master.loggedinUser
+
 
 		# Create a frame where all of the balance information information will be 
 		self.balancePage = ttk.Frame(self)
@@ -55,7 +59,7 @@ class userManageBalance(tk.Frame):
 
 	## Updates the balance label in the inputBalanceSection
 	def updateBalanceLabel(self):	
-		self.userBalanceLabel.config(text=f"Balance: {self.currentUser.getBalance()}")
+		self.userBalanceLabel.config(text=f"Balance: {locale.currency(self.currentUser.getBalance())}")
 
 	## Calculates new balance for user in regards to the amount they put in and what operation they did
 	## It then updates that balance in the database, and then updates that value in currentUser instance so that we can easily update labels without
@@ -97,8 +101,6 @@ class userManageBalance(tk.Frame):
 				return
 			newBalance -= inputAmount
 		
-		# Fix any rounding issues
-		newBalance = round(newBalance, 2)
 		# Then update their balance in the database in the database
 		with self.master.conn:
 			self.master.cursor.execute("UPDATE Users SET balance=:balance WHERE id=:id", 

@@ -3,18 +3,20 @@ import locale
 
 # Class representing what individual users or consumer accounts may look like 
 class User:
-	def __init__(self, username, firstName, lastName, shippingAddress, emailAddress):				
+	def __init__(self, id, username, firstName, lastName, shippingAddress, avatar, emailAddress, points, balance):				
 		# Initialize User attributes that the user will input in a form or something similar; "_" just indicates private attribute
+		self._id = id 
 		self._username = username 
 		self._firstName = firstName 
 		self._lastName = lastName
 		self._shippingAddress = shippingAddress  
 		self._emailAddress = emailAddress 
+		self._userAvatar = avatar
 		
 		# When we create accounts, the points and amount of money is going to be 0, accounts don't start off with money
 		# As well as this recentPUrchases is empty
-		self._userPoints = 0
-		self._userBalance = 0
+		self._userPoints = points
+		self._userBalance = balance
 		self._recentPurchases = [] # list of integers that represent id for purchase table
 
 		locale.setlocale(locale.LC_ALL, '')
@@ -47,6 +49,8 @@ class User:
 		self.recentPurchases.pop()
 
 	# Getter functions to get user instance attributes
+	def getID(self):
+		return self._id
 	def getUsername(self):
 		return self._username
 	def getFirstName(self):
@@ -59,8 +63,10 @@ class User:
 		return self._emailAddress
 	def getPoints(self):
 		return self._userPoints
+	def getAvatar(self):
+		return self._userAvatar
 	def getBalance(self):
-		return locale.currency(self._userBalance)
+		return self._userBalance
 	def getRecentPurchases(self):
 		return self._recentPurchases
 	

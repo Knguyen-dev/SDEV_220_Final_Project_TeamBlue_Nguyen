@@ -4,10 +4,11 @@ from PIL import Image, ImageTk
 from urllib.request import urlopen
 import io
 import locale
-
+from classes.Purchase import *
 
 BLUE = "#0f52a2"
 PINK = "#f5f5f5"
+ACCENT = "#21409A"
 
 class cartPage(tk.Frame):
     def __init__(self, master, app):
@@ -17,51 +18,43 @@ class cartPage(tk.Frame):
         self.content.pack(fill='both', expand=True)
         self.content.rowconfigure(0, weight=1) # set row 0 to expand vertically 
         locale.setlocale(locale.LC_ALL, '')
+        
+        self.subTotalVar = tk.DoubleVar(value=round((self.master.CartClass.getTotalCost()), 2))
+        self.taxVar = tk.DoubleVar(value=round((self.subTotalVar.get() * 0.07), 2))
+        self.totalVar = tk.DoubleVar(value=locale.currency(self.subTotalVar.get() + self.taxVar.get()))
 
-        self.subTotalVar = tk.IntVar(value = self.master.CartClass.getTotalCost())
-        self.taxVar = tk.IntVar(value = self.subTotalVar.get() * 0.07)
-        self.totalVar = tk.IntVar(value = locale.currency(self.subTotalVar.get() + self.taxVar.get()))
 
-        self.orderFrame = tk.Canvas(self.content, width=500)
+        self.orderFrame = tk.Frame(self.content, width=700)
 
-        self.OrderFrameLabel = ttk.Label(self.orderFrame, text="Order Summary", font=("Helvetica", 18, 'bold'))
-        self.OrderFrameLabel.grid(row=1, column=0, sticky="nw")
+        self.OrderFrameLabel = ttk.Label(self.orderFrame, text="Order Summary", font=("Helvetica", 18, 'bold'), anchor="e")
+        self.OrderFrameLabel.grid(row=0, column=0, columnspan=2)
 
-        self.subtotalLabel = ttk.Label(self.orderFrame, text="Subtotal: ", font=("Helvetica", 14))
-        self.subtotalLabel.grid(row=2, column=0, sticky="nw")
+        self.subtotalLabel = ttk.Label(self.orderFrame, text="Subtotal: ", font=("Helvetica", 14), anchor="e")
+        self.subtotalLabel.grid(row=1, column=0)
 
-        self.subtotalNumber = ttk.Label(self.orderFrame, textvariable=self.subTotalVar, font=("Helvetica", 14))
-        self.subtotalNumber.grid(row=2, column=1, sticky="w")
+        self.subtotalNumber = ttk.Label(self.orderFrame, textvariable=self.subTotalVar, font=("Helvetica", 14), anchor="e")
+        self.subtotalNumber.grid(row=1, column=1)
 
-        self.taxLabel = ttk.Label(self.orderFrame, text="Tax: ", font=("Helvetica", 14))
-        self.taxLabel.grid(row=3, column=0, sticky="w")
+        self.taxLabel = ttk.Label(self.orderFrame, text="Tax: ", font=("Helvetica", 14), anchor="e")
+        self.taxLabel.grid(row=2, column=0)
 
-        self.taxNumber = ttk.Label(self.orderFrame, textvariable=self.taxVar, font=("Helvetica", 14))
-        self.taxNumber.grid(row=3, column=1, sticky="w")
+        self.taxNumber = ttk.Label(self.orderFrame, textvariable=self.taxVar, font=("Helvetica", 14), anchor="e")
+        self.taxNumber.grid(row=2, column=1)
 
-        self.totatLabel = ttk.Label(self.orderFrame, text="Total: ", font=("Helvetica", 14))
-        self.totatLabel.grid(row=4, column=0, sticky="w")
+        self.totalLabel = ttk.Label(self.orderFrame, text="Total: ", font=("Helvetica", 14), anchor="e")
+        self.totalLabel.grid(row=3, column=0)
 
-        self.totalNumber = ttk.Label(self.orderFrame, textvariable=self.totalVar, font=("Helvetica", 14))
-        self.totalNumber.grid(row=4, column=1, sticky="w")
+        self.totalNumber = ttk.Label(self.orderFrame, textvariable=self.totalVar, font=("Helvetica", 14), anchor="e")
+        self.totalNumber.grid(row=3, column=1)
 
-        self.orderFrame.pack(fill='y', ipadx=100, pady=10, side='right')
+
+        self.buyButton = ttk.Button(self.orderFrame, text="Check out", style="TTButton", command=lambda : self.purchaseItems())
+        self.buyButton.grid(row=4, column=0, columnspan=2, pady=15)
+
+        self.orderFrame.pack(fill='y', padx=(100, 0), pady=10, ipadx=50, side='right', expand=False)
         
 
-        """
-        self.orderFrame = tk.Canvas(self.content, width=500, height=900)
-        self.background_image = tk.PhotoImage(file='images/orderBackground.png')
-        self.orderFrame.create_image(375, 350, image=self.background_image)
-        self.orderFrame.create_text(525, 120, text="Order Summary", fill="black", font=("Helvetica", 18, 'bold'), anchor='ne')
-        self.orderFrame.create_text(525, 160, text="Order Number: ", fill="black", font=("Helvetica", 14), anchor='ne')
-        self.orderFrame.create_text(525, 240, text="Subtotal: $", fill="black", font=("Helvetica", 14), anchor='ne')
-        self.orderFrame.create_text(525, 300, text="Tax: $", fill="black", font=("Helvetica", 14), anchor='ne')
-        self.orderFrame.create_text(525, 360, text="Total: $", fill="black", font=("Helvetica", 14), anchor='ne')
-        self.orderFrame.pack(fill='y', ipadx=100, side='right')
-        self.orderFrame.configure(bg='#f5f5f5')
-        """
-
-        self.canvas = tk.Canvas(self.content, width=350, height=700)
+        self.canvas = tk.Canvas(self.content, width=250, height=700)
         self.character_img = tk.PhotoImage(file='images/bagMan.png')
         self.canvas.create_image(190,475, image=self.character_img)
         self.bubble_img = tk.PhotoImage(file='images/bubbleText.png')
@@ -79,39 +72,41 @@ class cartPage(tk.Frame):
 
     def createCartDisplay(self, product, quantity):
         # Create section for each item
-        cartItem = tk.Frame(self.content, highlightbackground=PINK)
+        cartItem = tk.Frame(self.content)
 
-        imageFrame = tk.Frame(cartItem, height=120, width=120, background=PINK)
+        imageFrame = tk.Frame(cartItem, height=80, width=80)
         image = Image.open(product[4])
         image = image.resize((120, 120))
         image = ImageTk.PhotoImage(image=image)
         image_label = ttk.Label(imageFrame, image=image)
         image_label.image = image
-        image_label.grid(row=1, column=0, sticky=tk.EW, padx=3, pady=3)
-        imageFrame.grid(row=1, column=0, sticky=tk.NS, padx=3, pady=3)
+        image_label.grid(row=0, column=0, padx=3, pady=3)
+        imageFrame.grid(row=0, column=0, sticky="ne", padx=3, pady=3, rowspan=2)
 
-        name_label = ttk.Label(cartItem, text=product[1], font=("Helvetica", 10, 'bold'), width=60, anchor="w")
-        name_label.grid(row=2, column=1, sticky=tk.NSEW)
 
-        description = ttk.Label(cartItem, text=product[3], font=("Helvetica", 10), width=60, anchor="w")
-        description.grid(row=2, column=1, sticky=tk.NSEW)
+        name_label = ttk.Label(cartItem, text=product[1], font=("Helvetica", 10, 'bold'), anchor="w")
+        name_label.grid(row=0, column=1, sticky="n")
+
+        description = ttk.Label(cartItem, text=product[3], font=("Helvetica", 10), anchor="nw")
+        description.grid(row=1, column=1, sticky="nw")
 
 
         quantityVar = tk.StringVar(value = quantity)
         priceVar = tk.StringVar(value = locale.currency(product[2] * quantity))
         incrementerFrame = ttk.Frame(cartItem)
-        decrementButton = ttk.Button(incrementerFrame,  text=" - ", command= lambda: self.sub(product))
+        decrementButton = ttk.Button(incrementerFrame,  text=" - ", command= lambda: self.sub(product), width=5)
         decrementButton.grid(row=0, column=0)
-        quanityText = ttk.Entry(incrementerFrame, textvariable=quantityVar)
+        quanityText = ttk.Entry(incrementerFrame, textvariable=quantityVar, width=8)
         quanityText.grid(row=0, column=1)
-        incrementButton = ttk.Button(incrementerFrame,  text=" + ", command= lambda: self.add(product))
+        incrementButton = ttk.Button(incrementerFrame,  text=" + ", command= lambda: self.add(product), width=5)
         incrementButton.grid(row=0, column=2)
+        incrementerFrame.grid(row=1, column=3, sticky="e")
 
-        incrementerFrame.grid()
+        price = ttk.Label(cartItem, textvariable=priceVar, font=("Helvetica", 14, 'bold'), width=20, anchor="e")
+        price.grid(row=0, column=3, sticky="e")
 
-
-        price = ttk.Label(cartItem, textvariable=priceVar, font=("Helvetica", 14, 'bold'), width=20, anchor="w")
-        price.grid(row=2, column=2, sticky=tk.NSEW)
+        cartItem.columnconfigure(2, weight=1)
+        cartItem.columnconfigure(3, weight=1)
 
         self.cartItem.update({product[0] : {'quantity': quantityVar, 'price': priceVar}})
 
@@ -136,6 +131,8 @@ class cartPage(tk.Frame):
         # Update Cart Class with new Quantity
         self.master.CartClass.updateCartItem(product, b)
         ## Update the cost of totalCost
+        self.updateSummary()
+
         return
     
     def sub(self, product):
@@ -147,6 +144,76 @@ class cartPage(tk.Frame):
         self.cartItem.get(productID).get('quantity').set(b)
         self.master.CartClass.updateCartItem(product, b)
 
+        self.updateSummary()
+
         return
     
     
+    def updateSummary(self):
+        self.subTotalVar.set(round(self.master.CartClass.getTotalCost(), 2))
+        self.taxVar.set(round((self.subTotalVar.get() * 0.07), 2))
+        self.totalVar.set(locale.currency(round((self.subTotalVar.get() + self.taxVar.get()), 2)))
+        pass
+
+    
+    def purchaseItems(self):
+        total = int(self.subTotalVar.get() + (self.subTotalVar.get() * 0.07))
+        balance = int(self.master.loggedinUser.getBalance())
+
+        # Gets cart items and sums up the total quantity of items
+        cartItems = self.master.CartClass.getCartItems()
+        totalQuantity = 0
+
+        for item in cartItems:
+            totalQuantity += item[1]
+        
+        # If they have enough money and it's a successful purchase
+        if (balance - total) >= 0:
+            # Changes user's balance and points; the point system is having 5% of the total be the amount of points they earn
+            # Then save their new balance and points in the database, because I don't it has been done yet
+            self.master.loggedinUser.setUserBalance((balance - total))
+            currentPoints = self.master.loggedinUser.getPoints()
+            earnedPoints = int(total * 0.05)
+            self.master.loggedinUser.setUserPoints(currentPoints + earnedPoints)
+
+
+
+            # Makes purchase and puts it into database
+            Purchase(self.master.loggedinUser.getID(), total, totalQuantity)
+
+            with self.master.conn:
+
+                # Update the loggedinUser's balance and points in the database 
+                self.master.cursor.execute(f'''UPDATE Users SET balance=:balance, points=:points WHERE id=:id''', 
+                {
+                    "balance": self.master.loggedinUser.getBalance(),
+                    "points": self.master.loggedinUser.getPoints(),
+                    "id": self.master.loggedinUser.getID()
+                })
+
+
+
+                # Gets the most recent purcahse from the databaseand gets the id
+                self.master.cursor.execute("SELECT id FROM Orders ORDER BY id DESC LIMIT 1")
+                purchaseID = self.master.cursor.fetchone()
+
+                # For each cart item, insert it into OrderBreakdown with corresponding information
+                for item in cartItems:
+                    self.master.cursor.execute("INSERT INTO OrderBreakdown (order_id, item_id, quantity) VALUES (:order_id, :item_id, :quantity)", 
+                    {
+                        "order_id": purchaseID[0],
+                        "item_id": item[0][0],
+                        "quantity": item[1]
+                    }                           
+                    )
+
+            # Calls function that empties the shopping cart, since they're done with the purchase
+            self.master.CartClass.emptyShoppingCart()
+            self.master.openPage("receiptPage", purchaseID[0])
+
+            # Probably want them to be taken to another page after they're done with that
+            # If not the receipt page, then we could probably take them back to the home page
+
+            
+        else:
+            print("fail")

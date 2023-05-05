@@ -17,6 +17,9 @@ class userRegister(tk.Frame):
 		self.registrationPage = ttk.Frame(self)
 		self.registrationPage.pack(expand=True)
 
+		# Email validation Regex
+		self.regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
 		# Create section that shows errors and create label that will show errors when creating an account
 		self.creationMessageSection = ttk.Frame(self.registrationPage)
 		self.creationMessageSection.pack(pady=20)
@@ -65,14 +68,14 @@ class userRegister(tk.Frame):
 
 
 	def validateForm(self, input):
-		regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+		self.regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 		## If the input is empty return false
 		if input == "":
 			return False
 		## If the input is greater than 50 return false
 		elif len(input) > 50:
 			return False
-		elif input == self.entryCreateList[4].get() and not re.fullmatch(regex, input):
+		elif input == self.entryCreateList[4].get() and not re.fullmatch(self.regex, input):
 			return False
 		## Everything else passes the Validation
 		else:
@@ -86,8 +89,7 @@ class userRegister(tk.Frame):
 			self.creationMessageLabel.config(text="Account Creation Error: Some fields were left blank", foreground="#cc0000")
 			return
 		# Input validation for the email, makes sure it is the correct format
-		regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-		if not re.fullmatch(regex, self.entryCreateList[4].get()):
+		if not re.fullmatch(self.regex, self.entryCreateList[4].get()):
 			self.creationMessageLabel.config(text = "Account Creation Error: Email not valid", foreground="#cc0000")
 			self.entryCreateList[4].config(highlightcolor="#cc0000")
 			return
@@ -102,21 +104,21 @@ class userRegister(tk.Frame):
 		inputUser = User(username=self.entryCreateList[0].get(), firstName=self.entryCreateList[1].get(), lastName=self.entryCreateList[2].get(), shippingAddress=self.entryCreateList[3].get(), emailAddress=self.entryCreateList[4].get())
 		
 		with self.master.conn:
-			self.master.cursor.execute("SELECT username FROM Users WHERE username=:username", {"username": inputUser.getUsername()})
+			self.master.cursor.execute("SELECT username FROM Users WHERE username=:username", {"username": self.entryCreateList[0].get()})
 			data = self.master.cursor.fetchone()
 
 			# If there's an username entry in the database with the same username as the one that was inputted, then we get an error when creating the account since usernames are supposed to be unique
 			if data is not None:
-				self.creationMessageLabel.config(text=f"Account Creation Error: '{inputUser.getUsername()}' is already taken")
+				self.creationMessageLabel.config(text=f"Account Creation Error: '{self.entryCreateList[0].get()}' is already taken")
 				return
 			
 			# Account creation is successful, add it to the database and save database
 			self.master.cursor.execute("INSERT INTO Users (username, fname, lname, email, balance, address, points, password_hash, avatar) VALUES (:username, :fname, :lname, :email, :balance, :address, :points, :password_hash, :avatar)",
 			{
-			"username": inputUser.getUsername(),
-			"fname": inputUser.getFirstName(),
-			"lname": inputUser.getLastName(),
-			"email": inputUser.getEmailAddress(),
+			"username": self.entryCreateList[0].get(),
+			"fname": self.entryCreateList[1].get(),
+			"lname": self.entryCreateList[2].get(),
+			"email": self.entryCreateList[4].get(),
 			"balance": inputUser.getBalance(),
 			"address": inputUser.getShippingAddress(),
 			"points": inputUser.getPoints(),

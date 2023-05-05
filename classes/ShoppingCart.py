@@ -27,17 +27,17 @@ class ShoppingCart:
 
 	# Calculates the current cost of all of the items in the cart and updates totalCost attribute, and returns it 
 	def getTotalCost(self):
-		"""
-		Idea:
+		cart = self.getCartItems()
+		totalCost = 0
+		for item in cart:
+			price = item[0][2]
+			totalCost += price * item[1]
+		return totalCost
 
-		self._totalCost = 0 # Set the totalCost to 0, then sum all prices 
-		for each ID in our shopping cart:
-			itemPrice = price of item that was queried from "items" database by id
-			orderCost = itemPrice * quantity of that specific item;
-			self._totalCost += orderCost  
-		return self._totalCost; 
-		"""
-		pass
+	# Function for emptying shopping cart by setting it to a blank dictionary
+	def emptyShoppingCart(self):
+		self._cartItems = dict()
+
 	
 	# Returns the userID of the "User" associated with the shopping cart
 	def getUserID(self):

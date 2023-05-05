@@ -66,7 +66,7 @@ class userChangePassword(tk.Frame):
 		with self.master.conn:
 			
 			# Check if the input for current password matches their current password
-			self.master.cursor.execute(f"SELECT password_hash FROM Users WHERE id=:id", {"id": self.master.loggedinUser})
+			self.master.cursor.execute(f"SELECT password_hash FROM Users WHERE id=:id", {"id": self.master.loggedinUser.getID()})
 			
 			# Query the password hash for the user from the database
 			dbPasswordHash = self.master.cursor.fetchone()[0]
@@ -80,7 +80,7 @@ class userChangePassword(tk.Frame):
 			self.master.cursor.execute(f'''UPDATE Users SET password_hash=:password_hash WHERE id=:id''', 
 			{
 				"password_hash": hashlib.md5(inputNewPassword.encode("utf-8")).hexdigest(),
-				"id": self.master.loggedinUser
+				"id": self.master.loggedinUser.getID()
 			})
 		# Log out the user after
 		self.master.logOutUser()

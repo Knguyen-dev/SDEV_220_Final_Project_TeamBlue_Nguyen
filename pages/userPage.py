@@ -9,7 +9,7 @@ import locale
 # Class represents the userPage or my account page. To get to this page the user should go through the login process first, which 
 # ensures that an account exists to create this page for.
 class userPage(tk.Frame):
-	def __init__(self, master, app, userID):
+	def __init__(self, master, app):
 		super().__init__(master)
 		self.master = master
 		self.app = app
@@ -17,17 +17,13 @@ class userPage(tk.Frame):
 		# Create the frame where all of the user information will lay
 		self.userPage = ttk.Frame(self)
 		self.userPage.pack(fill='both', expand=True)
-		# Get row of data (tuple) that corresponds with "userID" from the Users tabele 
-		self.userData = self.getUser(userID)
 		
 		# Create instance of "User" class with that userData, this represents the class instance of the current logged in user
 		# Also update the balance and points attributes since their attributes are defaulted to zero when creating a User instanec
-		self.currentUser = User(self.userData[1], self.userData[2], self.userData[3], self.userData[6], self.userData[4])
-		self.currentUser.setUserBalance(self.userData[5])
-		self.currentUser.setUserPoints(self.userData[7])
+		self.currentUser = self.master.loggedinUser
 
 		# Represents the http URL for the image
-		self.userAvatarSource = self.userData[9] 
+		self.userAvatarSource = self.currentUser.getAvatar()
 
 		# Represents names of user attribute from the User class
 		self.userAttributeNames = ["Username", "Email", "Shipping Address", "Balance", "Points"]
@@ -44,8 +40,8 @@ class userPage(tk.Frame):
 		self.profileBtnsSection = ttk.Frame(self.userPage)
 		self.profileBtnsSection.grid(row=1, column=0)
 		# Create and position buttons for the profileBtnsSection
-		self.openEditAccountBtn = ttk.Button(self.profileBtnsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit", self.currentUser))
-		self.openManageBalanceBtn = ttk.Button(self.profileBtnsSection, text="Manage Wallet", command=lambda: self.master.openPage("userManageBalance", self.currentUser))
+		self.openEditAccountBtn = ttk.Button(self.profileBtnsSection, text="Edit Account", command=lambda: self.master.openPage("userEdit"))
+		self.openManageBalanceBtn = ttk.Button(self.profileBtnsSection, text="Manage Wallet", command=lambda: self.master.openPage("userManageBalance"))
 		self.logOutBtn = ttk.Button(self.profileBtnsSection, text="Log out", command=self.master.logOutUser)
 		self.openDeleteAccountBtn = ttk.Button(self.profileBtnsSection, text="Delete Account", command=lambda: self.master.openPage("userDelete"))
 		self.openEditAccountBtn.grid(row=0, column=0, padx=5, pady=5)
@@ -117,8 +113,3 @@ class userPage(tk.Frame):
 		image_label.grid(row=0, column=0, sticky=tk.EW, padx=3, pady=3)
 		self.imageFrame.grid(row=0, column=0, padx=40)
 	
-	# Get the user information; login process guarantees that an existing and valid userID exists, so we can be sure that this query always brings the right user data
-	def getUser(self, id):
-		self.master.cursor.execute(f"SELECT * FROM Users WHERE id={id}")
-		user = self.master.cursor.fetchone()
-		return user

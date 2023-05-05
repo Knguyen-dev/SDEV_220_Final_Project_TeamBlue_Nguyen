@@ -4,6 +4,7 @@ import sqlite3
 import tkinter as tk
 from tkinter import ttk
 from classes.ShoppingCart import *
+from classes.User import *
 
 
 class App(tk.Tk):
@@ -73,8 +74,8 @@ class App(tk.Tk):
 		self.searchFrame.pack(fill="y", side="left")
 		# Search bar and button
 		self.searchBar = ttk.Entry(self.searchFrame, width=140)
-		self.searchBar.pack(side="left", ipady=8, padx=2, anchor="center")
-		self.searchButton = ttk.Button(master=self.searchFrame, text='Search', compound="right", command= lambda: self.searchFunction())
+		self.searchBar.pack(side="left", ipady=8, padx=2, anchor="center") 
+		self.searchButton = ttk.Button(master=self.searchFrame, text='Search', compound="right", command= lambda: self.openPage("homePage", self.searchBar.get()))
 		self.searchButton.pack(fill="y", side="right")
 
 		# user frame
@@ -90,17 +91,18 @@ class App(tk.Tk):
 		self.userButton.pack(side="left", ipadx=10, fill="y")
 		
 		
-	
+
 	## function searchFunction()
 	## Grabs text from inside of searchBar Entry and sends data to homePage
-	def searchFunction(self, e):
-		searchItem = self.searchBar.get()
-		self.openPage("homePage", searchItem)
+	def searchFunction(self, e=None):
+		if self.focus_get() == self.searchBar:
+			self.openPage("homePage", self.searchBar.get())
 
 	## Logs out the user by clearing the loggedinUser variable, and taking user to the login page
 	# NOTE: Put in main since it's needed in both userPage and userChangePassword
 	def logOutUser(self):
 		self.loggedinUser = None
+		self.CartClass.emptyShoppingCart()
 		# Change userButton so that it redirects to the login page 
 		self.userButton.configure(text="Login", command=lambda: self.openPage("userLogin"))
 		self.openPage("userLogin")

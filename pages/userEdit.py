@@ -6,13 +6,13 @@ import classes.utilities as Utilities
 # Class or page for editing the current user's account; for changing account information such as name, email, etc.
 # NOTE: Page will link to pages for changing the user's password and managing the user's wallet
 class userEdit(tk.Frame): 
-	def __init__(self, master, app, currentUser):
+	def __init__(self, master, app):
 		super().__init__(master)
 		self.app = app
 		self.master = master
 
 		# User class instance representing the currently logged in user, passed from userPage
-		self.currentUser = currentUser
+		self.currentUser = self.master.loggedinUser
 
 		# Create the frame that contains all the widgets and elements on the editPage
 		self.editPage = ttk.Frame(self)
@@ -75,7 +75,7 @@ class userEdit(tk.Frame):
 			data = self.master.cursor.fetchone()
 			# If a usernames from the database is found, then it could be a duplicate or it could be the user's own username we are matching
 			# If it's another account that has the username, then it's a duplicate username and we throw an error
-			if data is not None and data[0] != self.master.loggedinUser:
+			if data is not None and data[0] != self.master.loggedinUser.getID():
 				self.editMessageLabel.config(text= "Username is already taken")
 				return
 			# If these tests are passed then we should save the stuff in the database
@@ -87,7 +87,8 @@ class userEdit(tk.Frame):
 				"lname": self.entryEditList[2].get(),
 				"email": self.entryEditList[3].get(),
 				"address": self.entryEditList[4].get(),
-				"id": self.master.loggedinUser
+				"id": self.master.loggedinUser.getID()
 			})
 
 		# After they change their password, we log them out of their account. 
+		self.master.openPage("userPage")

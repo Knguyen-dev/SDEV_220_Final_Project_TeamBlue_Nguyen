@@ -79,7 +79,5 @@ class userDelete(tk.Frame):
 		# After correctly deleting the current user, set the logged in user back to None 
 		# Set the userButton so that when pressed it sends you to the login page. 
 		# After they've deleted their account, take them to the account registration page
-		self.master.loggedinUser = None
-		self.master.userButton.configure(text="Login", command=lambda: self.master.openPage("userLogin"))
-		self.master.openPage("userRegister")
+		self.master.logOutUser()
 
