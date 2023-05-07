@@ -21,50 +21,50 @@ class userRegister(tk.Frame):
 		self.regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
 
 		# Create section that shows errors and create label that will show errors when creating an account
-		self.creationMessageSection = ttk.Frame(self.registrationPage)
-		self.creationMessageSection.pack(pady=20)
-		self.creationMessageLabel = ttk.Label(self.creationMessageSection, text="", foreground="#cc0000")
+		creationMessageSection = ttk.Frame(self.registrationPage)
+		creationMessageSection.pack(pady=20)
+		self.creationMessageLabel = ttk.Label(creationMessageSection, text="", foreground="#cc0000")
 		self.creationMessageLabel.grid(row=0, column=0) 
 
 		# Create the login section where you input the information
-		self.inputCreationSection = ttk.LabelFrame(self.registrationPage, text="Enter credentials to log in")
-		self.inputCreationSection.pack(fill='both', expand=True, ipadx=20, ipady=10)
+		inputCreationSection = ttk.LabelFrame(self.registrationPage, text="Enter credentials to log in")
+		inputCreationSection.pack(fill='both', expand=True, ipadx=20, ipady=10)
 
 		# Create the button section and put it inside the input section
-		self.createBtnSection = ttk.Frame(self.inputCreationSection)
+		createBtnSection = ttk.Frame(inputCreationSection)
 
-		self.fieldNamesCreate = ["Username", "First Name", "Last Name", "Shipping Address", "Email"] # List of fields names needed for creating an account
+		fieldNamesCreate = ["Username", "First Name", "Last Name", "Shipping Address", "Email"] # List of fields names needed for creating an account
 		self.entryCreateList = [] # List of entry widgets for getting login input, we will then access these widgets later in the loginUserAccount function
 
 		# Create label and entry widgets for each field, and position them; store the entry widgets for later use
-		for x in range(len(self.fieldNamesCreate)):
-			fieldLabelCreate = ttk.Label(self.inputCreationSection, text=f"{self.fieldNamesCreate[x]}:")
-			fieldEntryCreate = ttk.Entry(self.inputCreationSection,validate='focusout', validatecommand=(self.register(self.validateForm), '%P'))
+		for x in range(len(fieldNamesCreate)):
+			fieldLabelCreate = ttk.Label(inputCreationSection, text=f"{fieldNamesCreate[x]}:")
+			fieldEntryCreate = ttk.Entry(inputCreationSection,validate='focusout', validatecommand=(self.register(self.validateForm), '%P'))
 			fieldLabelCreate.grid(row=x, column=0, padx=5, pady=5)
 			fieldEntryCreate.grid(row=x, column=1, padx=5, pady=5)
 			self.entryCreateList.append(fieldEntryCreate)
 
-		passwordLabel = ttk.Label(self.inputCreationSection, text="Password: ")
-		passwordEntry = ttk.Entry(self.inputCreationSection, show="*")
+		# Labels and entries for retyping passwords; appending those entries in the entry list also 
+		passwordLabel = ttk.Label(inputCreationSection, text="Password: ")
+		passwordEntry = ttk.Entry(inputCreationSection, show="*")
 		passwordLabel.grid(row=5, column=0, padx=5, pady=5)
 		passwordEntry.grid(row=5, column=1, padx=5, pady=5)
 		self.entryCreateList.append(passwordEntry)
 
-		password2Label = ttk.Label(self.inputCreationSection, text="Confirm Password:")
-		password2Entry = ttk.Entry(self.inputCreationSection, show="*")
+		password2Label = ttk.Label(inputCreationSection, text="Confirm Password:")
+		password2Entry = ttk.Entry(inputCreationSection, show="*")
 		password2Label.grid(row=6, column=0, padx=5, pady=5)
 		password2Entry.grid(row=6, column=1, padx=5, pady=5)
 		self.entryCreateList.append(password2Entry)
 
-
 		# Have the creationBtnSection at the end of the grid after the fields
-		self.createBtnSection.grid(row=7, column=0, columnspan=2, sticky=tk.S, padx=10)
+		createBtnSection.grid(row=7, column=0, columnspan=2, sticky=tk.S, padx=10)
 
 		# Create buttons that open the login page from the registration page and confirm account creation button. 
-		openLoginPageBtn = ttk.Button(self.createBtnSection, text="Already have an account?", command=lambda: self.master.openPage("userLogin"))
-		confirmCreationBtn = ttk.Button(self.createBtnSection, text="Confirm", command=self.createUserAccount)
-		openLoginPageBtn.grid(row=len(self.fieldNamesCreate), column=0, padx=10, pady=10)
-		confirmCreationBtn.grid(row=len(self.fieldNamesCreate), column=1, padx=10, pady=10)
+		openLoginPageBtn = ttk.Button(createBtnSection, text="Already have an account?", command=lambda: self.master.openPage("userLogin"))
+		confirmCreationBtn = ttk.Button(createBtnSection, text="Confirm", command=self.createUserAccount)
+		openLoginPageBtn.grid(row=len(fieldNamesCreate), column=0, padx=10, pady=10)
+		confirmCreationBtn.grid(row=len(fieldNamesCreate), column=1, padx=10, pady=10)
 
 
 	def validateForm(self, input):
@@ -100,9 +100,6 @@ class userRegister(tk.Frame):
 			self.creationMessageLabel.config(text="Account Creation Error: Passwords do not match", foreground="#cc0000")
 			return
 
-		# Create user instance with the input from the input entries
-		inputUser = User(username=self.entryCreateList[0].get(), firstName=self.entryCreateList[1].get(), lastName=self.entryCreateList[2].get(), shippingAddress=self.entryCreateList[3].get(), emailAddress=self.entryCreateList[4].get())
-		
 		with self.master.conn:
 			self.master.cursor.execute("SELECT username FROM Users WHERE username=:username", {"username": self.entryCreateList[0].get()})
 			data = self.master.cursor.fetchone()
@@ -119,9 +116,9 @@ class userRegister(tk.Frame):
 			"fname": self.entryCreateList[1].get(),
 			"lname": self.entryCreateList[2].get(),
 			"email": self.entryCreateList[4].get(),
-			"balance": inputUser.getBalance(),
-			"address": inputUser.getShippingAddress(),
-			"points": inputUser.getPoints(),
+			"balance": 0, # balance and points are always set to zero when an account is created
+			"address": self.entryCreateList[3].get(),
+			"points": 0,
 			# Hash the password with an algorithm and store it as a one of the values for the database entry
 			"password_hash": hashlib.md5(inputPassword.encode("utf-8")).hexdigest(),
 			# Set their avatar or profile picture to a default image in the database; so all accounts start off with default image

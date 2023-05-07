@@ -15,36 +15,36 @@ class userChangePassword(tk.Frame):
 		self.passwordPage.pack(expand=True)
 
 		# Create message section and label for showing error and other messages to the suer
-		self.passwordMessageSection = ttk.Frame(self.passwordPage)
-		self.passwordMessageLabel = ttk.Label(self.passwordMessageSection, text="")
-		self.passwordMessageSection.pack()
+		passwordMessageSection = ttk.Frame(self.passwordPage)
+		self.passwordMessageLabel = ttk.Label(passwordMessageSection, text="")
+		passwordMessageSection.pack()
 		self.passwordMessageLabel.grid(row=0, column=0)
 
 		# Create section for inputting credentials for changing your password
-		self.inputPasswordSection = ttk.LabelFrame(self.passwordPage, text="Enter Password Info")
-		self.inputPasswordSection.pack(ipadx=20, padx=20, pady=10)
+		inputPasswordSection = ttk.LabelFrame(self.passwordPage, text="Enter Password Info")
+		inputPasswordSection.pack(ipadx=20, padx=20, pady=10)
 
 		# Create field names, these will be the input fields they fill out to ocnfirm a password change
-		self.fieldNamesPassword = ["Current Password", "New Password", "Retype Password"]
+		fieldNamesPassword = ["Current Password", "New Password", "Retype Password"]
 		# List will include our entry widgets that correspond to our fields; a parallel list to fieldNamesPassword
 		self.entryPasswordList = []
 		
 		# Create our label and entry widgets, then position them; also store our entry widgets
-		for x in range(len(self.fieldNamesPassword)):
-			fieldLabelPassword = ttk.Label(self.inputPasswordSection, text=f"{self.fieldNamesPassword[x]}:")
-			fieldEntryPassword = ttk.Entry(self.inputPasswordSection)
+		for x in range(len(fieldNamesPassword)):
+			fieldLabelPassword = ttk.Label(inputPasswordSection, text=f"{fieldNamesPassword[x]}:")
+			fieldEntryPassword = ttk.Entry(inputPasswordSection)
 			fieldLabelPassword.grid(row=x, column=0, padx=5, pady=10)
 			fieldEntryPassword.grid(row=x, column=1, padx=5, pady=10)
 			self.entryPasswordList.append(fieldEntryPassword)
 
 		# Create button section for the change password page; 
 		# Nest this section in the inputPasswordSection and put it under the labels and widgets
-		self.passwordBtnSection = ttk.Frame(self.inputPasswordSection)
-		self.passwordBtnSection.grid(row=len(self.fieldNamesPassword), column=0, columnspan=2, pady=10)
+		passwordBtnSection = ttk.Frame(inputPasswordSection)
+		passwordBtnSection.grid(row=len(fieldNamesPassword), column=0, columnspan=2, pady=10)
 
 		# Create button for confirming your password change
-		self.changePasswordBtn = ttk.Button(self.passwordBtnSection, text="Confirm Password Change", command=self.changeUserPassword)
-		self.changePasswordBtn.grid(row=0, column=0) 
+		changePasswordBtn = ttk.Button(passwordBtnSection, text="Confirm Password Change", command=self.changeUserPassword)
+		changePasswordBtn.grid(row=0, column=0) 
 
 	## Function that confirms password change for current user account as long as it passes checks
 	def changeUserPassword(self):

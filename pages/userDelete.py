@@ -15,32 +15,32 @@ class userDelete(tk.Frame):
 		self.deletePage.pack(expand=True)
 
 		# create message section that will alert the user about events on the delete account page
-		self.deleteMessageSection = ttk.Frame(self.deletePage)
-		self.deleteMessageLabel = ttk.Label(self.deleteMessageSection, text="")
-		self.deleteMessageSection.pack(pady=10)
+		deleteMessageSection = ttk.Frame(self.deletePage)
+		deleteMessageSection.pack(pady=10)
+		self.deleteMessageLabel = ttk.Label(deleteMessageSection, text="")
 		self.deleteMessageLabel.grid(row=0, column=0)
 
 		# Create sectikno for inputting information to delete the account of the current logged in user
-		self.inputDeleteSection = ttk.LabelFrame(self.deletePage, text="Enter credentials of the currently logged in account")
-		self.inputDeleteSection.pack(ipadx=5, ipady=10)
+		inputDeleteSection = ttk.LabelFrame(self.deletePage, text="Enter credentials of the currently logged in account")
+		inputDeleteSection.pack(ipadx=5, ipady=10)
 
 		# Button section for delete page; mainly just going to be the delete button itself for now
-		self.deleteBtnSection = ttk.Frame(self.inputDeleteSection)
-		self.confirmDeleteBtn = ttk.Button(self.deleteBtnSection, text="Delete Account", command=self.deleteUserAccount)
+		deleteBtnSection = ttk.Frame(inputDeleteSection)
+		confirmDeleteBtn = ttk.Button(deleteBtnSection, text="Delete Account", command=self.deleteUserAccount)
 
 		# Field names needed to delete your account; using username instead of email because username is unique
-		self.fieldNamesDelete = ["Username", "Password", "Retype Password"]
+		fieldNamesDelete = ["Username", "Password", "Retype Password"]
 		self.entryDeleteList = []
 
 		# Create labels and entry widgest, position them, and position the deleteBtnSection at teh bottom
-		for x in range(len(self.fieldNamesDelete)):
-			fieldLabelDelete = ttk.Label(self.inputDeleteSection, text=f"{self.fieldNamesDelete[x]}:")
-			fieldEntryDelete = ttk.Entry(self.inputDeleteSection)
+		for x in range(len(fieldNamesDelete)):
+			fieldLabelDelete = ttk.Label(inputDeleteSection, text=f"{fieldNamesDelete[x]}:")
+			fieldEntryDelete = ttk.Entry(inputDeleteSection)
 			fieldLabelDelete.grid(row=x, column=0, padx=5, pady=10)
 			fieldEntryDelete.grid(row=x, column=1, padx=5, pady=10)
 			self.entryDeleteList.append(fieldEntryDelete)
-		self.deleteBtnSection.grid(row=len(self.fieldNamesDelete), column=0, columnspan=2)
-		self.confirmDeleteBtn.grid(row=0,column=0)
+		deleteBtnSection.grid(row=len(fieldNamesDelete), column=0, columnspan=2)
+		confirmDeleteBtn.grid(row=0,column=0)
 
 	def deleteUserAccount(self):
 		# Strip entry widgets and check if some fields were left blank
@@ -62,7 +62,7 @@ class userDelete(tk.Frame):
 			{
 				"username": self.entryDeleteList[0].get(),
 				"password_hash": hashlib.md5(inputPassword.encode("utf-8")).hexdigest(),
-				"id": self.master.loggedinUser
+				"id": self.master.loggedinUser.getID()
 			})
 			data = self.master.cursor.fetchone()
 
@@ -74,7 +74,7 @@ class userDelete(tk.Frame):
 			# At this point it means that the user has entered the correct information, so we delete their account from the database
 			self.master.cursor.execute("DELETE FROM Users WHERE id=:id", 
 			{
-				"id": self.master.loggedinUser
+				"id": self.master.loggedinUser.getID()
 			})		
 		# After correctly deleting the current user, set the logged in user back to None 
 		# Set the userButton so that when pressed it sends you to the login page. 

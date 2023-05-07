@@ -48,7 +48,6 @@ class App(tk.Tk):
 		page_class = self.loadPage(page_name)
 		if page_class is None:
 			return
-
 		if self.current_page:
 			self.current_page.destroy()
 
@@ -81,15 +80,14 @@ class App(tk.Tk):
 		# user frame
 		self.userFrame = ttk.Frame(self.navbar)
 		self.userFrame.pack(fill="y", side="right")
-		# user / cart button
-		self.cartButton = ttk.Button(master=self.userFrame, text='Cart', compound="right", command=lambda: self.openPage("cartPage"))
+
+		# set cart button to default to the user login page; user's shouldn't be able to access the cart unless they're logged in first
+		self.cartButton = ttk.Button(master=self.userFrame, text='Cart', compound="right", command=lambda: self.openPage("userLogin"))
 		self.cartButton.pack(side="left", ipadx=10, fill="y")
 
 		# create the userButton; by default it's set to "Login" and takes you to the login page, but once you log in, it changes to show your account
-		# NOTE: Logic for changing the button is in the userLogin page 
 		self.userButton = ttk.Button(master=self.userFrame, text='Login', compound="right", command=lambda: self.openPage("userLogin"))
 		self.userButton.pack(side="left", ipadx=10, fill="y")
-		
 		
 
 	## function searchFunction()
@@ -103,8 +101,9 @@ class App(tk.Tk):
 	def logOutUser(self):
 		self.loggedinUser = None
 		self.CartClass.emptyShoppingCart()
-		# Change userButton so that it redirects to the login page 
+		# Change userButton and shopping cart so that it redirects to the login page 
 		self.userButton.configure(text="Login", command=lambda: self.openPage("userLogin"))
+		self.cartButton.configure(command=lambda: self.openPage("userLogin"))
 		self.openPage("userLogin")
 		return
 	

@@ -15,10 +15,10 @@ class ShoppingCart:
 		self._cartItems[product] = itemQuantity
 
 	# Function to completely remove items from the cart; deleting their key; NOTE: user shouldn't be able to remove an item that isn't in the cart in the first place
-	def removeCartItem(self, itemID):
-		del self._cartItems[itemID]
+	def removeCartItem(self, item):
+		del self._cartItems[item]
 
-	# Returns the items of the shopping cart as a list of tuples in form (itemID from item table, quantity of that item)
+	# Returns the items of the shopping cart as a list of tuples in form (product tuple, quantity of item as integer)
 	def getCartItems(self):
 		itemList = []
 		for itemData in self._cartItems.items():

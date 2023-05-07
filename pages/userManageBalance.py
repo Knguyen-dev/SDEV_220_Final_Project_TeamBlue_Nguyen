@@ -12,57 +12,53 @@ class userManageBalance(tk.Frame):
 
 		locale.setlocale(locale.LC_ALL, '')
 
-		# User class representing the currently logged in user, passed from userPage 
-		self.currentUser = self.master.loggedinUser
-
-
 		# Create a frame where all of the balance information information will be 
 		self.balancePage = ttk.Frame(self)
 		self.balancePage.pack(expand=True)
 		
 		# Creation section and label for showing the user events on the page for managing their balance
-		self.balanceMessageSection = ttk.Frame(self.balancePage)
-		self.balanceMessageLabel = ttk.Label(self.balanceMessageSection, text="")
-		self.balanceMessageSection.pack(pady=10)
+		balanceMessageSection = ttk.Frame(self.balancePage)
+		balanceMessageSection.pack(pady=10)
+		self.balanceMessageLabel = ttk.Label(balanceMessageSection, text="")
 		self.balanceMessageLabel.grid(row=0, column=0)
 
 		# Section for inputting the balance information and showing balance info 
-		self.inputBalanceSection = ttk.LabelFrame(self.balancePage, text="Balance info")
-		self.inputBalanceSection.pack(ipadx=20, ipady=10)
+		inputBalanceSection = ttk.LabelFrame(self.balancePage, text="Balance info")
+		inputBalanceSection.pack(ipadx=20, ipady=10)
 
 		# Section for containing buttons for the balance page
-		self.balanceBtnSection = ttk.Frame(self.inputBalanceSection)
+		balanceBtnSection = ttk.Frame(inputBalanceSection)
 
 		# Two types of fields that relate to "balance" and money. However user will not be able to influence "points"
 		# NOTE: List will only be used for making labels in balanceInfoSection; label and entry widget for input will be done separately
-		self.fieldNamesBalance = ["Balance", "Points"]
+		fieldNamesBalance = ["Balance", "Points"]
 		
 		# Create the point and balance label; the balance label will be updated when the user updates their balance on the page
-		self.userBalanceLabel = ttk.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[0]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[0])}")
-		self.userPointsLabel = ttk.Label(self.inputBalanceSection, text=f"{self.fieldNamesBalance[1]}: {self.currentUser.getAttributeByName(self.fieldNamesBalance[1])}")
+		self.userBalanceLabel = ttk.Label(inputBalanceSection, text=f"{fieldNamesBalance[0]}: {locale.currency(self.master.loggedinUser.getBalance())}")
+		self.userPointsLabel = ttk.Label(inputBalanceSection, text=f"{fieldNamesBalance[1]}: {self.master.loggedinUser.getAttributeByName(fieldNamesBalance[1])}")
 		self.userPointsLabel.grid(row=0, column=0)
 		self.userBalanceLabel.grid(row=1, column=0)
 
 		# Create label and entry widget for input balance section; then psoition the balance button section below it
-		self.fieldBalanceLabel = ttk.Label(self.inputBalanceSection, text="Amount:")
-		self.fieldBalanceEntry = ttk.Entry(self.inputBalanceSection)
-		self.fieldBalanceLabel.grid(row=len(self.fieldNamesBalance), column=0, padx=5, pady=10)
-		self.fieldBalanceEntry.grid(row=len(self.fieldNamesBalance), column=1, padx=5, pady=10) 
-		self.balanceBtnSection.grid(row=len(self.fieldNamesBalance) + 1, column=0, columnspan=2, sticky=tk.S)
+		fieldBalanceLabel = ttk.Label(inputBalanceSection, text="Amount:")
+		self.fieldBalanceEntry = ttk.Entry(inputBalanceSection)
+		fieldBalanceLabel.grid(row=len(fieldNamesBalance), column=0, padx=5, pady=10)
+		self.fieldBalanceEntry.grid(row=len(fieldNamesBalance), column=1, padx=5, pady=10) 
+		balanceBtnSection.grid(row=len(fieldNamesBalance) + 1, column=0, columnspan=2, sticky=tk.S)
 
 		# Create buttons, so that user can add or subtract a certain balance from their total balance
-		self.addBalanceBtn = ttk.Button(self.balanceBtnSection, text="Add Balance", command=lambda: self.updateBalance("ADD"))
-		self.subtractBalanceBtn = ttk.Button(self.balanceBtnSection, text="Subtract Balance", command=lambda: self.updateBalance("SUBTRACT"))
-		self.addBalanceBtn.grid(row=0, column=0, padx=5, pady=10)
-		self.subtractBalanceBtn.grid(row=0, column=1, padx=5, pady=10)
+		addBalanceBtn = ttk.Button(balanceBtnSection, text="Add Balance", command=lambda: self.updateBalance("ADD"))
+		subtractBalanceBtn = ttk.Button(balanceBtnSection, text="Subtract Balance", command=lambda: self.updateBalance("SUBTRACT"))
+		addBalanceBtn.grid(row=0, column=0, padx=5, pady=10)
+		subtractBalanceBtn.grid(row=0, column=1, padx=5, pady=10)
 
 
 	## Updates the balance label in the inputBalanceSection
 	def updateBalanceLabel(self):	
-		self.userBalanceLabel.config(text=f"Balance: {locale.currency(self.currentUser.getBalance())}")
+		self.userBalanceLabel.config(text=f"Balance: {locale.currency(self.master.loggedinUser.getBalance())}")
 
 	## Calculates new balance for user in regards to the amount they put in and what operation they did
-	## It then updates that balance in the database, and then updates that value in currentUser instance so that we can easily update labels without
+	## It then updates that balance in the database, and then updates that value in the loggedinUser instance so that we can easily update labels without
 	## Having to access the database again.
 	def updateBalance(self, operation):
 		# inputAmount represents numerical amount of money the user inputted in the entry widget
@@ -88,7 +84,7 @@ class userManageBalance(tk.Frame):
 			return
 		
 		# Now they've got a valid number they can add to their balance, we can update their balances
-		newBalance = self.currentUser.getBalance()
+		newBalance = self.master.loggedinUser.getBalance()
 
 		# Calculate the new total balance of the user 
 		if operation == "ADD":
@@ -106,10 +102,10 @@ class userManageBalance(tk.Frame):
 			self.master.cursor.execute("UPDATE Users SET balance=:balance WHERE id=:id", 
 			{
 				"balance": newBalance,
-				"id": self.master.loggedinUser
+				"id": self.master.loggedinUser.getID()
 			})
 		# update the balance for the current user, which we can then use to update the balance label
-		self.currentUser.setUserBalance(newBalance)
+		self.master.loggedinUser.setUserBalance(newBalance)
 
 		# Now that we have our new balance, we should update the balance label 
 		self.updateBalanceLabel()

@@ -17,9 +17,9 @@ class userLogin(tk.Frame):
 		self.loginPage.pack(expand=True)
 
 		# Create the login message section to alert the user about events in the login page; mainly errors
-		self.loginMessageSection = ttk.Frame(self.loginPage)
-		self.loginMessageLabel = ttk.Label(self.loginMessageSection, text="")
-		self.loginMessageSection.pack(pady=10)
+		loginMessageSection = ttk.Frame(self.loginPage)
+		loginMessageSection.pack(pady=10)
+		self.loginMessageLabel = ttk.Label(loginMessageSection, text="")
 		self.loginMessageLabel.grid(row=0, column=0)
 
 		# Create the login section where you input the information
@@ -83,5 +83,7 @@ class userLogin(tk.Frame):
 			
 		# Change userButton in navbar, now that we've logged in it should say "User" or "My Account" rather than just "login",
 		self.master.userButton.configure(text="User", command=lambda: self.master.openPage("userPage"))
+		# Change the shopping cart button so that it actually takes you to a shopping cart
+		self.master.cartButton.configure(command=lambda: self.master.openPage("cartPage"))
 		# Take user to the userPage now that they're logged in, passed the user ID of the current user that's logged in
 		self.master.openPage("userPage")
