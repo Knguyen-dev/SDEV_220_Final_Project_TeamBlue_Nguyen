@@ -69,7 +69,7 @@ class userPage(tk.Frame):
 			# NOTE: For lambda and loops, the common error is that if you don't use i=x, it will reassign our buttons to the last element in the loop for some reason
 			for x in range(len(recentPurchases)):
 				purchaseLabel = ttk.Label(purchaseListSection, text=f"Purchase ID: {recentPurchases[x][0]} - Total Quantity: {recentPurchases[x][3]} - Total Cost: {locale.currency(recentPurchases[x][1])}", font=("Helvetica", 12, "bold"))
-				purchaseInfoBtn = ttk.Button(purchaseListSection, text=f"More Info index: {x}", command=lambda i=x: self.master.openPage("receiptPage", recentPurchases[i][0]))
+				purchaseInfoBtn = ttk.Button(purchaseListSection, text=f"More Info:", command=lambda i=x: self.master.openPage("receiptPage", recentPurchases[i][0]))
 				purchaseLabel.grid(row=x, column=0, padx=5, pady=5, sticky="w")
 				purchaseInfoBtn.grid(row=x, column=1, padx=5, pady=5, sticky="e")
 
