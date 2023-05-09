@@ -30,7 +30,12 @@ class productPage(tk.Frame):
 		self.description = ttk.Label(self.productDetails, font=('Helvetica', 14, 'italic'), text=str(self.description),width=80, wraplength=700, justify='left')
 		self.description.grid(row=2, column=0, pady=10, sticky="w")
 
-		self.addButton = ttk.Button(self.productDetails, text="Add to cart", command= lambda: self.master.CartClass.updateCartItem(self.product, 1))
+		# If the user isn't logged in, then the product page's add button should just take them to the login page
+		if self.master.loggedinUser == None:
+			self.addButton = ttk.Button(self.productDetails, text="Add to cart", command= lambda: self.master.openPage("userLogin"))
+		else:
+			self.addButton = ttk.Button(self.productDetails, text="Add to cart", command= lambda: self.master.CartClass.updateCartItem(self.product, 1))
+			
 		self.addButton.grid(row=3, column=0, sticky=tk.W)
 		self.productDetails.grid(row=1, column=1, sticky=tk.N)
 
